@@ -1,7 +1,7 @@
 import { NavLink, Link } from 'react-router-dom';
 import { 
   LayoutDashboard, FileText, Settings, LogOut, ShieldCheck, 
-  PieChart, BarChart3, Home, Gavel, Target 
+  PieChart, BarChart3, Home, Gavel, Target, Zap 
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -9,6 +9,7 @@ const navItems = [
   { name: 'Accueil', icon: Home, path: '/' },
   { name: 'Tableau de bord', icon: LayoutDashboard, path: '/dashboard' },
   { name: 'Dossiers Recouvrement', icon: FileText, path: '/dossiers' },
+  { name: 'Moteur de Relance', icon: Zap, path: '/relances' },
   { name: 'Dossiers Contentieux', icon: Gavel, path: '/legal' },
   { name: 'Veille Réglementaire', icon: ShieldCheck, path: '/regulatory' },
   { name: 'Scoring & Segmentation', icon: Target, path: '/scoring' },
