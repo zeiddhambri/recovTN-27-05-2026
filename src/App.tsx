@@ -12,6 +12,7 @@ import LegalTracking from "./pages/LegalTracking";
 import RegulatoryWatch from "./pages/RegulatoryWatch";
 import Reporting from "./pages/Reporting";
 import Settings from "./pages/Settings";
+import Scoring from "./pages/Scoring";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/legal" element={<LegalTracking />} />
             <Route path="/regulatory" element={<RegulatoryWatch />} />
             <Route path="/reporting" element={<Reporting />} />
+            <Route path="/scoring" element={<Scoring />} />
             <Route path="/settings" element={<Settings />} />
           </Route>
           <Route path="*" element={<NotFound />} />
