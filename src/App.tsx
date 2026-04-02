@@ -34,6 +34,7 @@ const App = () => (
             <Route path="/regulatory" element={<RegulatoryWatch />} />
             <Route path="/reporting" element={<Reporting />} />
             <Route path="/scoring" element={<Scoring />} />
+            <Route path="/relances" element={<Relances />} />
             <Route path="/settings" element={<Settings />} />
           </Route>
           <Route path="*" element={<NotFound />} />
