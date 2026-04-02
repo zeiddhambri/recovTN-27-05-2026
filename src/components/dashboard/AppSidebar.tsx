@@ -11,6 +11,7 @@ const navItems = [
   { name: 'Dossiers Recouvrement', icon: FileText, path: '/dossiers' },
   { name: 'Dossiers Contentieux', icon: Gavel, path: '/legal' },
   { name: 'Veille Réglementaire', icon: ShieldCheck, path: '/regulatory' },
+  { name: 'Scoring & Segmentation', icon: Target, path: '/scoring' },
   { name: 'Reporting', icon: PieChart, path: '/reporting' },
   { name: 'Analyses', icon: BarChart3, path: '/analytics' },
   { name: 'Paramètres', icon: Settings, path: '/settings' },
