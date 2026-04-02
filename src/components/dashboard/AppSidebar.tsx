@@ -1,7 +1,7 @@
 import { NavLink, Link } from 'react-router-dom';
 import { 
   LayoutDashboard, FileText, Settings, LogOut, ShieldCheck, 
-  PieChart, BarChart3, Home, Gavel 
+  PieChart, BarChart3, Home, Gavel, Target 
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
