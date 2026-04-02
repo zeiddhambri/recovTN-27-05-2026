@@ -13,6 +13,7 @@ import RegulatoryWatch from "./pages/RegulatoryWatch";
 import Reporting from "./pages/Reporting";
 import Settings from "./pages/Settings";
 import Scoring from "./pages/Scoring";
+import Relances from "./pages/Relances";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
