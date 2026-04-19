@@ -30,7 +30,7 @@ export default function Hero() {
             className="max-w-2xl text-white"
           >
             <h1 className="font-serif-display text-4xl md:text-5xl lg:text-[58px] leading-[1.05] tracking-tight mb-6">
-              Recouvrement&nbsp;: pour en finir avec les factures en retard de paiement
+              L'intelligence au service du recouvrement
             </h1>
             <p className="text-base md:text-lg text-white/90 max-w-xl leading-relaxed mb-10 font-light">
               Recouvrement BtoB, relances commerciales, actions amiables et procédures judiciaires,
