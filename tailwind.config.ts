@@ -14,8 +14,11 @@ export default {
     },
     extend: {
       fontFamily: {
-        syne: ['"Syne"', 'sans-serif'],
-        dm: ['"DM Sans"', 'sans-serif'],
+        syne: ['"Source Serif 4"', 'Georgia', 'serif'],
+        dm: ['"Inter"', '"DM Sans"', 'sans-serif'],
+        serif: ['"Source Serif 4"', 'Georgia', 'serif'],
+        'serif-display': ['"Source Serif 4"', 'Georgia', 'serif'],
+        sans: ['"Inter"', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -64,6 +67,16 @@ export default {
         cream: "hsl(var(--cream))",
         ink: "hsl(var(--ink))",
         mist: "hsl(var(--mist))",
+        crimson: {
+          DEFAULT: "hsl(var(--crimson))",
+          hover: "hsl(var(--crimson-hover))",
+        },
+        charcoal: "hsl(var(--charcoal))",
+        slate: "hsl(var(--slate))",
+        paper: {
+          DEFAULT: "hsl(var(--paper))",
+          soft: "hsl(var(--paper-soft))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
