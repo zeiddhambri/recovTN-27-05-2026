@@ -41,7 +41,7 @@ export default function Navbar() {
             <span className="text-crimson text-2xl">✦</span>
             <div className="leading-none">
               <div className="font-serif-display text-2xl text-charcoal tracking-tight">RecovTN</div>
-              <div className="text-[10px] uppercase tracking-[0.2em] text-slate -mt-0.5">Collections</div>
+              
             </div>
           </Link>
         </div>
