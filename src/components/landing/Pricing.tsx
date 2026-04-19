@@ -6,22 +6,43 @@ const plans = [
   {
     name: 'Standard',
     price: '499',
-    desc: 'Pour les agences de recouvrement et petites institutions.',
-    features: ["Jusqu'à 500 dossiers", 'Gestion contentieux de base', 'Reporting mensuel', 'Support email', '1 utilisateur Admin'],
+    desc: "Pour les institutions financières et IMF qui démarrent leur digitalisation du recouvrement.",
+    features: [
+      "Jusqu'à 500 dossiers actifs",
+      'Gestion des 6 statuts de dossiers',
+      'Moteur de relance — scénario Standard',
+      'Scoring de risque inclus',
+      'Reporting opérationnel',
+      '1 utilisateur Admin',
+    ],
     featured: false,
   },
   {
     name: 'Business',
     price: '1 299',
-    desc: 'La solution complète pour les banques de taille moyenne.',
-    features: ['Dossiers illimités', 'Workflow contentieux avancé', 'Espace Avocats & Huissiers', 'Reporting BCT automatisé', 'Support prioritaire 24/7', '5 utilisateurs'],
+    desc: 'La solution complète pour les banques de taille moyenne et sociétés de recouvrement.',
+    features: [
+      'Dossiers illimités',
+      'Tous scénarios de relance (Standard, Intensif, Amiable)',
+      'Canaux SMS, Email, WhatsApp, Appel',
+      'Suivi judiciaire & agenda contentieux',
+      'Veille BCT/CTAF + Reporting régulateur',
+      '5 utilisateurs',
+    ],
     featured: true,
   },
   {
     name: 'Enterprise',
     price: 'Sur mesure',
-    desc: 'Infrastructure dédiée pour les grandes institutions bancaires.',
-    features: ['Déploiement On-Premise possible', 'API & Intégration Core Banking', 'IA Prédictive avancée', 'Audit de conformité trimestriel', 'Account Manager dédié', 'Utilisateurs illimités'],
+    desc: 'Pour les grandes banques avec besoins d’intégration et de gouvernance avancés.',
+    features: [
+      'Déploiement dédié possible',
+      'Intégration avec votre Core Banking',
+      'Scoring & scénarios personnalisés',
+      'SLA & support dédié',
+      'Account Manager dédié',
+      'Utilisateurs illimités',
+    ],
     featured: false,
   },
 ];
@@ -33,10 +54,11 @@ export default function Pricing() {
         <div className="text-center max-w-3xl mx-auto mb-16">
           <span className="eyebrow mb-5 block">Tarification</span>
           <h2 className="h-display mb-6">
-            Un investissement rentable dès le premier dossier
+            Une plateforme, trois formats, adaptés à votre portefeuille
           </h2>
           <p className="text-slate text-[17px] font-light">
-            Choisissez le plan qui correspond à la taille de votre portefeuille de créances.
+            Choisissez la formule qui correspond à la taille de votre portefeuille
+            de créances classifiées et au niveau de fonctionnalités recherché.
           </p>
         </div>
 
@@ -61,7 +83,7 @@ export default function Pricing() {
                 </div>
               )}
 
-              <div className={cn('text-[11px] font-semibold uppercase tracking-[0.2em] mb-5', plan.featured ? 'text-crimson' : 'text-crimson')}>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.2em] mb-5 text-crimson">
                 {plan.name}
               </div>
 
@@ -83,24 +105,14 @@ export default function Pricing() {
               <ul className="space-y-3.5 mb-10 flex-1">
                 {plan.features.map((feat, j) => (
                   <li key={j} className="flex items-start gap-3 text-[14px] font-light leading-relaxed">
-                    <Check
-                      size={16}
-                      strokeWidth={2}
-                      className={cn('shrink-0 mt-0.5', plan.featured ? 'text-crimson' : 'text-crimson')}
-                    />
+                    <Check size={16} strokeWidth={2} className="shrink-0 mt-0.5 text-crimson" />
                     <span className={plan.featured ? 'text-white/85' : 'text-charcoal'}>{feat}</span>
                   </li>
                 ))}
               </ul>
 
-              <button
-                className={
-                  plan.featured
-                    ? 'btn-crimson w-full'
-                    : 'btn-outline-crimson w-full'
-                }
-              >
-                Choisir ce plan
+              <button className={plan.featured ? 'btn-crimson w-full' : 'btn-outline-crimson w-full'}>
+                {plan.price === 'Sur mesure' ? 'Nous contacter' : 'Demander une démo'}
               </button>
             </motion.div>
           ))}

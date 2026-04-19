@@ -16,20 +16,21 @@ export default function LandingPage() {
         <Problem />
         <Features />
 
-        {/* CTA Section */}
+        {/* CTA Section — Demande de démo */}
         <section id="contact" className="py-24 lg:py-32 bg-white border-t border-border">
           <div className="container-atr">
             <div className="grid lg:grid-cols-12 gap-10 items-end mb-12">
               <div className="lg:col-span-7">
-                <span className="eyebrow mb-5 block">Demande de devis</span>
+                <span className="eyebrow mb-5 block">Demande de démo</span>
                 <h2 className="h-display">
-                  Une facture impayée&nbsp;? Obtenez un devis personnalisé sous 24h
+                  Découvrez RecovTN sur votre portefeuille — démo personnalisée sous 48h
                 </h2>
               </div>
               <div className="lg:col-span-5">
                 <p className="text-slate text-[16px] font-light leading-relaxed">
-                  Décrivez-nous votre situation : nos experts vous proposent une stratégie
-                  amiable ou judiciaire adaptée, sans engagement.
+                  Présentez-nous votre contexte (banque, IMF, société de recouvrement)
+                  et le volume de dossiers à piloter. Nous vous proposons une démo
+                  ciblée des modules pertinents.
                 </p>
               </div>
             </div>
@@ -40,7 +41,12 @@ export default function LandingPage() {
             >
               <input
                 type="text"
-                placeholder="Votre nom"
+                placeholder="Nom et prénom"
+                className="md:col-span-4 px-5 py-4 rounded-sm bg-paper-soft border border-border text-charcoal placeholder:text-slate/70 focus:outline-none focus:border-crimson transition-colors"
+              />
+              <input
+                type="text"
+                placeholder="Institution"
                 className="md:col-span-4 px-5 py-4 rounded-sm bg-paper-soft border border-border text-charcoal placeholder:text-slate/70 focus:outline-none focus:border-crimson transition-colors"
               />
               <input
@@ -48,13 +54,8 @@ export default function LandingPage() {
                 placeholder="Email professionnel"
                 className="md:col-span-4 px-5 py-4 rounded-sm bg-paper-soft border border-border text-charcoal placeholder:text-slate/70 focus:outline-none focus:border-crimson transition-colors"
               />
-              <input
-                type="tel"
-                placeholder="Téléphone"
-                className="md:col-span-4 px-5 py-4 rounded-sm bg-paper-soft border border-border text-charcoal placeholder:text-slate/70 focus:outline-none focus:border-crimson transition-colors"
-              />
               <button type="submit" className="btn-crimson md:col-span-4 mt-2">
-                Demander un devis
+                Demander une démo
               </button>
             </form>
           </div>

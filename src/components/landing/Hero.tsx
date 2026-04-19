@@ -2,20 +2,19 @@ import { motion } from 'framer-motion';
 import heroImg from '@/assets/hero-recouvrement.jpg';
 
 const tabs = [
-  { label: 'Recouvrement amiable et judiciaire', active: true },
-  { label: 'Une facture impayée ? devis en ligne', active: false },
-  { label: 'Gérez vos relances clients', active: false },
-  { label: "J'ai reçu une relance", active: false },
+  { label: 'Plateforme de pilotage du recouvrement', active: true },
+  { label: 'Moteur de relance multicanal', active: false },
+  { label: 'Scoring de risque client', active: false },
+  { label: 'Reporting BCT & CTAF', active: false },
 ];
 
 export default function Hero() {
   return (
     <section className="relative pt-20 bg-white">
-      {/* Hero image */}
       <div className="relative w-full h-[78vh] min-h-[560px] max-h-[760px] overflow-hidden">
         <img
           src={heroImg}
-          alt="Femme professionnelle analysant des données financières"
+          alt="Analyse de portefeuille de créances bancaires"
           width={1920}
           height={1080}
           className="absolute inset-0 w-full h-full object-cover"
@@ -33,17 +32,17 @@ export default function Hero() {
               L'intelligence au service du recouvrement
             </h1>
             <p className="text-base md:text-lg text-white/90 max-w-xl leading-relaxed mb-10 font-light">
-              Recouvrement BtoB, relances commerciales, actions amiables et procédures judiciaires,
-              en Tunisie et à l'international.
+              La plateforme SaaS qui pilote vos créances classifiées : scoring,
+              relances multicanal, suivi contentieux et reporting réglementaire,
+              pensée pour les banques et IMF tunisiennes.
             </p>
             <a href="#contact" className="btn-crimson text-[15px] px-8 py-4">
-              Je veux en savoir plus
+              Demander une démo
             </a>
           </motion.div>
         </div>
       </div>
 
-      {/* Tabs bar */}
       <div className="border-b border-border bg-white">
         <div className="container-atr">
           <div className="flex flex-wrap items-stretch gap-x-2 lg:gap-x-12 overflow-x-auto">
@@ -52,9 +51,7 @@ export default function Hero() {
                 key={i}
                 className={
                   'relative py-6 text-[14px] font-medium whitespace-nowrap transition-colors ' +
-                  (t.active
-                    ? 'text-charcoal'
-                    : 'text-slate hover:text-charcoal')
+                  (t.active ? 'text-charcoal' : 'text-slate hover:text-charcoal')
                 }
               >
                 {t.label}
