@@ -7,24 +7,24 @@ import cardContentieux from '@/assets/card-contentieux.jpg';
 const cards = [
   {
     img: cardAmiable,
-    title: 'Recouvrement amiable',
-    desc: "Notre volonté : résoudre l'impayé à l'amiable pour vous éviter une procédure judiciaire parfois longue et coûteuse.",
+    title: 'Phase amiable automatisée',
+    desc: "Orchestrez vos relances SMS, email, WhatsApp et appels selon des scénarios paramétrables (Standard, Intensif, Amiable) déclenchés par les délais et le score client.",
     href: '#features',
-    cta: 'En savoir plus',
+    cta: 'Voir le moteur de relance',
   },
   {
     img: cardContentieux,
-    title: 'Recouvrement judiciaire',
-    desc: "Si l'amiable n'aboutit pas, nos experts juridiques pilotent la procédure contentieuse en lien avec notre réseau d'avocats.",
+    title: 'Suivi contentieux intégré',
+    desc: "Pilotez les dossiers transférés en contentieux : agenda judiciaire, échéances, intervenants. Une vue unique sur l'avancement de chaque procédure.",
     href: '#features',
-    cta: 'En savoir plus',
+    cta: 'Voir le suivi juridique',
   },
   {
     img: cardContact,
-    title: 'Nous contacter',
-    desc: 'Par téléphone +216 71 000 000 ou par email : contact@recovtn.com',
-    href: '#contact',
-    cta: 'Prendre contact',
+    title: 'Conformité BCT & CTAF',
+    desc: "Veille réglementaire des circulaires BCT/CTAF et reporting prêt pour le régulateur. Restez aligné sans effort de production manuelle.",
+    href: '#features',
+    cta: 'Voir le reporting',
   },
 ];
 
@@ -35,15 +35,15 @@ export default function Problem() {
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start mb-16">
           <div className="lg:col-span-6">
             <h2 className="h-display mb-0">
-              Obtenez le paiement de vos factures impayées, en Tunisie, à l'international
+              Du premier retard de paiement à la clôture du contentieux, sur une seule plateforme
             </h2>
           </div>
           <div className="lg:col-span-6 lg:pt-3">
             <p className="text-slate text-[17px] leading-[1.7] font-light">
-              Nous pouvons recouvrer vos créances en retard de paiement dans le monde entier
-              via notre réseau&nbsp;: plus de 300 collaborateurs et plus de 450 avocats partenaires.
-              Une action amiable sera toujours privilégiée pour obtenir des résultats rapides.
-              Si nécessaire, une procédure judiciaire sera recommandée.
+              RecovTN structure l'ensemble du cycle de vie de vos créances classifiées —
+              de la relance amiable au transfert judiciaire — avec un scoring de risque
+              objectif, un moteur de relance multicanal et un reporting conforme aux
+              exigences de la Banque Centrale de Tunisie.
             </p>
           </div>
         </div>

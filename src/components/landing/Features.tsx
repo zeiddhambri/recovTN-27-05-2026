@@ -1,13 +1,37 @@
 import { motion } from 'framer-motion';
-import { Database, Scale, BarChart3, Bell, Users, Search, ArrowRight } from 'lucide-react';
+import { Database, Scale, BarChart3, Bell, Send, Gauge, ArrowRight } from 'lucide-react';
 
 const features = [
-  { icon: Database, title: 'Gestion des dossiers', desc: 'Centralisation de tous les crédits classifiés avec historique complet et workflow de régularisation.' },
-  { icon: Scale, title: 'Suivi contentieux', desc: 'Agenda judiciaire intégré, alertes de délais, et tableau de bord avocats/huissiers.' },
-  { icon: BarChart3, title: 'Reporting automatisé', desc: 'Génération automatique des rapports comité de recouvrement et régulateur BCT en un clic.' },
-  { icon: Bell, title: 'Veille réglementaire', desc: 'Veille automatisée des circulaires BCT/CTAF avec check-lists de mise en conformité.' },
-  { icon: Users, title: 'Espace intervenants', desc: 'Portail sécurisé pour les avocats partenaires et huissiers avec accès granulaire.' },
-  { icon: Search, title: 'Scoring & analytics', desc: "Scoring de recouvrement basé sur l'historique pour prioriser les actions à fort ROI." },
+  {
+    icon: Database,
+    title: 'Gestion des dossiers',
+    desc: "CRUD complet des créances avec 6 statuts normalisés : à relancer, en relance, promesse de paiement, partiellement payé, payé, transfert en contentieux. Affectation aux agents et historique des interactions.",
+  },
+  {
+    icon: Send,
+    title: 'Moteur de relance multicanal',
+    desc: "Scénarios paramétrables (Standard, Intensif, Amiable) avec déclencheurs sur délais relatifs (J-5, J+1…) et conditions sur le score client. Canaux SMS, email, WhatsApp et appel.",
+  },
+  {
+    icon: Gauge,
+    title: 'Scoring de risque (0-100)',
+    desc: "Score pondéré sur 5 critères — montant, historique, ancienneté, réactivité, profil — qui classe chaque client en Fiable, À surveiller ou À risque pour prioriser vos actions.",
+  },
+  {
+    icon: Scale,
+    title: 'Suivi judiciaire',
+    desc: "Agenda contentieux dédié pour suivre les dossiers transférés : échéances de procédure, intervenants et avancement consolidés.",
+  },
+  {
+    icon: Bell,
+    title: 'Veille réglementaire BCT & CTAF',
+    desc: "Module de veille des circulaires Banque Centrale de Tunisie et CTAF, intégré dans la plateforme pour alimenter votre conformité.",
+  },
+  {
+    icon: BarChart3,
+    title: 'Reporting & analytics',
+    desc: "Tableau de bord opérationnel et page Analytics avec indicateurs de performance, vues consolidées et exports prêts pour le régulateur.",
+  },
 ];
 
 export default function Features() {
@@ -16,19 +40,20 @@ export default function Features() {
       <div className="container-atr">
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 mb-20">
           <div className="lg:col-span-5">
-            <span className="eyebrow mb-5 block">Nos services</span>
+            <span className="eyebrow mb-5 block">Modules de la plateforme</span>
             <h2 className="h-display">
-              Une expertise complète au service du recouvrement bancaire
+              Six modules pensés pour le recouvrement bancaire en Tunisie
             </h2>
           </div>
           <div className="lg:col-span-6 lg:col-start-7 lg:pt-4">
             <p className="text-slate text-[17px] leading-[1.7] font-light mb-6">
-              RecovTN couvre le cycle complet de la créance — de la première alerte
-              à la clôture du dossier contentieux. Nos modules s'adaptent à la taille
-              et à la maturité de votre institution.
+              RecovTN couvre le cycle complet de la créance classifiée — de la
+              première relance à la clôture du contentieux. Chaque module est
+              opérationnel et conçu pour s'intégrer au workflow réel de vos
+              équipes recouvrement.
             </p>
             <a href="#pricing" className="inline-flex items-center gap-2 text-crimson text-[13px] font-semibold uppercase tracking-wider">
-              Découvrir nos offres <ArrowRight size={14} />
+              Voir les offres <ArrowRight size={14} />
             </a>
           </div>
         </div>

@@ -14,8 +14,9 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-white/60 text-[14px] leading-relaxed font-light max-w-md mb-8">
-              La première plateforme dédiée à l'optimisation du recouvrement bancaire en Tunisie.
-              Recouvrement amiable, judiciaire, et conseil aux institutions financières.
+              Plateforme SaaS de pilotage du recouvrement bancaire en Tunisie :
+              gestion des dossiers, moteur de relance multicanal, scoring de risque,
+              suivi contentieux et reporting BCT/CTAF.
             </p>
             <div className="flex gap-3">
               {[Linkedin, Twitter, Mail].map((Icon, i) => (
@@ -31,9 +32,9 @@ export default function Footer() {
           </div>
 
           <div className="lg:col-span-2 lg:col-start-6">
-            <h4 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/40 mb-6">Services</h4>
+            <h4 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/40 mb-6">Modules</h4>
             <ul className="space-y-3">
-              {['Recouvrement amiable', 'Recouvrement judiciaire', 'Relances clients', 'Reporting BCT'].map((item) => (
+              {['Gestion des dossiers', 'Moteur de relance', 'Scoring de risque', 'Reporting BCT'].map((item) => (
                 <li key={item}>
                   <a href="#" className="text-white/70 hover:text-crimson transition-colors text-[14px] font-light">{item}</a>
                 </li>
