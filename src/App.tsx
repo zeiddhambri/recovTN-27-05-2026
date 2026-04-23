@@ -9,6 +9,8 @@ import Dashboard from "./pages/Dashboard";
 import Dossiers from "./pages/Dossiers";
 import Analytics from "./pages/Analytics";
 import LegalTracking from "./pages/LegalTracking";
+import Litigation from "./pages/Litigation";
+import LitigationDetail from "./pages/LitigationDetail";
 import RegulatoryWatch from "./pages/RegulatoryWatch";
 import Reporting from "./pages/Reporting";
 import Settings from "./pages/Settings";
@@ -31,6 +33,8 @@ const App = () => (
             <Route path="/dossiers" element={<Dossiers />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/legal" element={<LegalTracking />} />
+            <Route path="/litigation" element={<Litigation />} />
+            <Route path="/litigation/:id" element={<LitigationDetail />} />
             <Route path="/regulatory" element={<RegulatoryWatch />} />
             <Route path="/reporting" element={<Reporting />} />
             <Route path="/scoring" element={<Scoring />} />
