@@ -249,7 +249,7 @@ export default function Litigation() {
 
 // ─────────────────────────────────────────
 function StatCard({ icon: Icon, label, value, subtitle, accent }: {
-  icon: React.ComponentType<{ size?: number; className?: string }>;
+  icon: any;
   label: string; value: string; subtitle?: string; accent?: boolean;
 }) {
   return (

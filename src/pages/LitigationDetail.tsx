@@ -116,12 +116,12 @@ export default function LitigationDetail() {
           <div className="bg-card rounded-2xl border border-border shadow-sm">
             <div className="flex border-b border-border overflow-x-auto">
               {([
-                { k: 'timeline',  label: 'Chronologie', icon: Calendar,        n: c.events.length },
-                { k: 'documents', label: 'Documents',   icon: FileText,        n: c.documents.length },
-                { k: 'hearings',  label: 'Audiences',   icon: Gavel,           n: c.hearings.length },
-                { k: 'financial', label: 'Financier',   icon: CircleDollarSign },
-                { k: 'notes',     label: 'Notes',       icon: StickyNote,      n: c.notes.length },
-              ] as const).map(t => (
+                { k: 'timeline'  as TabKey, label: 'Chronologie', icon: Calendar,         n: c.events.length },
+                { k: 'documents' as TabKey, label: 'Documents',   icon: FileText,         n: c.documents.length },
+                { k: 'hearings'  as TabKey, label: 'Audiences',   icon: Gavel,            n: c.hearings.length },
+                { k: 'financial' as TabKey, label: 'Financier',   icon: CircleDollarSign, n: undefined as number | undefined },
+                { k: 'notes'     as TabKey, label: 'Notes',       icon: StickyNote,       n: c.notes.length },
+              ]).map(t => (
                 <button
                   key={t.k}
                   onClick={() => setTab(t.k as TabKey)}
