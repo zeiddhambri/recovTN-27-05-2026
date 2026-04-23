@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Users, Shield, UserCog, Search, CheckCircle2 } from 'lucide-react';
+import { Users, Shield, UserCog, Search, CheckCircle2, Scale, Zap, Bell, AlertTriangle, FileWarning } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
@@ -175,6 +175,112 @@ export default function Settings() {
             </div>
           </div>
         </div>
+      </div>
+
+      <LitigationTriggers />
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════
+// LITIGATION TRIGGERS
+// ═══════════════════════════════════════════
+const TRIGGERS_INITIAL = [
+  {
+    id: 'auto_open_case',
+    icon: Scale,
+    title: 'Ouverture automatique de dossier contentieux',
+    description: "Crée un dossier contentieux quand un débiteur passe en statut critique avec un retard > 90 jours.",
+    enabled: true,
+    conditions: { riskLevel: 'critique', daysOverdue: 90 },
+  },
+  {
+    id: 'auto_mise_demeure',
+    icon: FileWarning,
+    title: 'Envoi automatique de la mise en demeure',
+    description: "Génère et envoie la mise en demeure quand toutes les actions amiables sont épuisées et qu'aucune réponse n'a été reçue depuis 30 jours.",
+    enabled: true,
+    conditions: { actionsExhausted: true, noResponseDays: 30 },
+  },
+  {
+    id: 'notify_lawyer_judgment',
+    icon: Bell,
+    title: "Notification de l'avocat sur jugement obtenu",
+    description: "Alerte l'avocat assigné dès qu'un dossier passe en étape « Jugement obtenu » pour démarrer la phase d'exécution.",
+    enabled: true,
+    conditions: { stage: 'judgment_obtained' },
+  },
+  {
+    id: 'escalate_hearing',
+    icon: AlertTriangle,
+    title: 'Escalade J-7 sans préparation',
+    description: "Escalade au gestionnaire si une audience approche dans moins de 7 jours et qu'aucune note de préparation n'a été ajoutée.",
+    enabled: false,
+    conditions: { daysBeforeHearing: 7, requiresPrepNotes: true },
+  },
+];
+
+function LitigationTriggers() {
+  const [triggers, setTriggers] = useState(TRIGGERS_INITIAL);
+
+  return (
+    <div className="bg-card rounded-3xl shadow-sm border border-border overflow-hidden">
+      <div className="p-6 border-b border-border flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-[hsl(var(--crimson))]/10 flex items-center justify-center">
+          <Zap size={20} className="text-[hsl(var(--crimson))]" />
+        </div>
+        <div>
+          <h2 className="text-lg font-bold text-navy font-syne">Déclencheurs contentieux</h2>
+          <p className="text-xs text-muted-foreground">Règles d'automatisation pour le module Litigation.</p>
+        </div>
+      </div>
+
+      <div className="divide-y divide-border">
+        {triggers.map(t => {
+          const Icon = t.icon;
+          return (
+            <div key={t.id} className="p-5 flex items-start gap-4">
+              <div className={cn(
+                "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0",
+                t.enabled ? "bg-[hsl(var(--crimson))]/10 text-[hsl(var(--crimson))]" : "bg-muted text-muted-foreground",
+              )}>
+                <Icon size={18} />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="font-bold text-sm text-navy">{t.title}</p>
+                  <button
+                    onClick={() => setTriggers(triggers.map(x => x.id === t.id ? { ...x, enabled: !x.enabled } : x))}
+                    className={cn(
+                      "relative w-11 h-6 rounded-full transition flex-shrink-0",
+                      t.enabled ? "bg-[hsl(var(--crimson))]" : "bg-muted",
+                    )}
+                  >
+                    <span className={cn(
+                      "absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform",
+                      t.enabled ? "translate-x-5" : "translate-x-0.5",
+                    )} />
+                  </button>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{t.description}</p>
+                <div className="flex flex-wrap gap-1.5 mt-2">
+                  {Object.entries(t.conditions).map(([k, v]) => (
+                    <span key={k} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-mist text-[10px] font-bold text-navy">
+                      {k} = <span className="text-[hsl(var(--crimson))]">{String(v)}</span>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="p-4 bg-mist border-t border-border flex items-center justify-between text-xs">
+        <span className="text-muted-foreground">
+          {triggers.filter(t => t.enabled).length} sur {triggers.length} déclencheurs actifs
+        </span>
+        <button className="font-bold text-[hsl(var(--crimson))] hover:underline">+ Nouveau déclencheur</button>
       </div>
     </div>
   );
