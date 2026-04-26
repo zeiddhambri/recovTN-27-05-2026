@@ -11,6 +11,9 @@ import Analytics from "./pages/Analytics";
 import LegalTracking from "./pages/LegalTracking";
 import Litigation from "./pages/Litigation";
 import LitigationDetail from "./pages/LitigationDetail";
+import Leasing from "./pages/Leasing";
+import LeasingNew from "./pages/LeasingNew";
+import LeasingDetail from "./pages/LeasingDetail";
 import RegulatoryWatch from "./pages/RegulatoryWatch";
 import Reporting from "./pages/Reporting";
 import Settings from "./pages/Settings";
@@ -35,6 +38,9 @@ const App = () => (
             <Route path="/legal" element={<LegalTracking />} />
             <Route path="/litigation" element={<Litigation />} />
             <Route path="/litigation/:id" element={<LitigationDetail />} />
+            <Route path="/leasing" element={<Leasing />} />
+            <Route path="/leasing/new" element={<LeasingNew />} />
+            <Route path="/leasing/:id" element={<LeasingDetail />} />
             <Route path="/regulatory" element={<RegulatoryWatch />} />
             <Route path="/reporting" element={<Reporting />} />
             <Route path="/scoring" element={<Scoring />} />
