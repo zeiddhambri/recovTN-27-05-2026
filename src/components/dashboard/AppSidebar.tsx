@@ -10,7 +10,6 @@ const navItems = [
   { name: 'Tableau de bord', icon: LayoutDashboard, path: '/dashboard' },
   { name: 'Dossiers Recouvrement', icon: FileText, path: '/dossiers' },
   { name: 'Moteur de Relance', icon: Zap, path: '/relances' },
-  { name: 'Dossiers Contentieux', icon: Gavel, path: '/legal' },
   { name: 'Module Contentieux', icon: Scale, path: '/litigation' },
   { name: 'Leasing', icon: Package, path: '/leasing' },
   { name: 'Veille Réglementaire', icon: ShieldCheck, path: '/regulatory' },

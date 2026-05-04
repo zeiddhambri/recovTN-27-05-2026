@@ -8,7 +8,7 @@ import DashboardLayout from "./components/dashboard/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
 import Dossiers from "./pages/Dossiers";
 import Analytics from "./pages/Analytics";
-import LegalTracking from "./pages/LegalTracking";
+
 import Litigation from "./pages/Litigation";
 import LitigationDetail from "./pages/LitigationDetail";
 import Leasing from "./pages/Leasing";
@@ -35,7 +35,7 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/dossiers" element={<Dossiers />} />
             <Route path="/analytics" element={<Analytics />} />
-            <Route path="/legal" element={<LegalTracking />} />
+            
             <Route path="/litigation" element={<Litigation />} />
             <Route path="/litigation/:id" element={<LitigationDetail />} />
             <Route path="/leasing" element={<Leasing />} />
