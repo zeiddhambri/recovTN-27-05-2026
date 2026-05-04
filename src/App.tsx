@@ -4,7 +4,10 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import LandingPage from "./pages/LandingPage";
+import Auth from "./pages/Auth";
 import DashboardLayout from "./components/dashboard/DashboardLayout";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
+import { AuthProvider } from "./contexts/AuthContext";
 import Dashboard from "./pages/Dashboard";
 import Dossiers from "./pages/Dossiers";
 import Analytics from "./pages/Analytics";
@@ -29,8 +32,11 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <AuthProvider>
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route element={<ProtectedRoute />}>
           <Route element={<DashboardLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/dossiers" element={<Dossiers />} />
@@ -47,8 +53,10 @@ const App = () => (
             <Route path="/relances" element={<Relances />} />
             <Route path="/settings" element={<Settings />} />
           </Route>
+          </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
