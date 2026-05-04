@@ -63,7 +63,7 @@ export default function Navbar() {
             <Search size={18} />
           </button>
           <Link
-            to="/dashboard"
+            to="/auth"
             className="hidden sm:flex items-center gap-2 text-[13px] font-medium text-charcoal hover:text-crimson transition-colors border-l border-border pl-5"
           >
             <User size={16} />
@@ -102,11 +102,11 @@ export default function Navbar() {
               </a>
             ))}
             <Link
-              to="/dashboard"
+              to="/auth"
               onClick={() => setIsMobileMenuOpen(false)}
               className="btn-crimson mt-4 w-full"
             >
-              Accéder à l'application
+              Se connecter
             </Link>
           </motion.div>
         )}
