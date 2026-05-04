@@ -8,7 +8,7 @@ import DashboardLayout from "./components/dashboard/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
 import Dossiers from "./pages/Dossiers";
 import Analytics from "./pages/Analytics";
-import LegalTracking from "./pages/LegalTracking";
+
 import Litigation from "./pages/Litigation";
 import LitigationDetail from "./pages/LitigationDetail";
 import Leasing from "./pages/Leasing";
