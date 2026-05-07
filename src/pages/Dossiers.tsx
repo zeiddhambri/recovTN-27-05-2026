@@ -1,17 +1,58 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Plus, MoreVertical } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { mockDossiers, statusConfig, DossierComplet } from '@/lib/mock-data';
 import { classificationConfig } from '@/lib/scoring';
+import { calculerScore } from '@/lib/scoring';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import NouveauDossierModal from '@/components/dossiers/NouveauDossierModal';
 
 const allStatuses = ['all', 'a_relancer', 'en_relance', 'promesse_paiement', 'partiellement_paye', 'paye', 'contentieux'] as const;
 
+function dbRowToDossier(r: any): DossierComplet {
+  const scoring = { montant: Number(r.amount), ancienneteJours: 30, tauxPaiementHistorique: 50, tauxReactivite: 50, typologieClient: 'pme' as const };
+  return {
+    id: r.id,
+    clientCode: r.client_code,
+    debtorName: r.debtor_name,
+    amount: Number(r.amount),
+    status: r.status,
+    managementLevel: r.management_level || 'recouvreur',
+    agent: r.assigned_to || 'Non assigné',
+    date: (r.due_date || r.created_at || '').slice(0, 10),
+    scoring,
+    scoringResult: calculerScore(scoring),
+    typologieClient: 'pme',
+  };
+}
+
 export default function Dossiers() {
+  const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [dbDossiers, setDbDossiers] = useState<DossierComplet[]>([]);
+  const [open, setOpen] = useState(false);
 
-  const filtered = mockDossiers.filter(d => {
+  const load = async () => {
+    if (!user) return;
+    const { data } = await supabase.from('dossiers').select('*').order('created_at', { ascending: false });
+    setDbDossiers((data || []).map(dbRowToDossier));
+  };
+
+  useEffect(() => {
+    load();
+    if (!user) return;
+    const ch = supabase.channel('dossiers-rt')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'dossiers' }, () => load())
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  const all = [...dbDossiers, ...mockDossiers];
+  const filtered = all.filter(d => {
     const matchesSearch = d.debtorName.toLowerCase().includes(searchQuery.toLowerCase()) || d.clientCode.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === 'all' || d.status === statusFilter;
     return matchesSearch && matchesStatus;
@@ -24,7 +65,7 @@ export default function Dossiers() {
           <h1 className="text-3xl font-black text-navy tracking-tight font-syne">Gestion Des Dossiers Recouvrement</h1>
           <p className="text-muted-foreground mt-1">Gérez vos dossiers de recouvrement et suivez les actions en cours.</p>
         </div>
-        <button className="flex items-center gap-2 px-5 py-2.5 bg-sky text-white rounded-xl text-sm font-bold hover:bg-sky/90 transition-all shadow-lg shadow-sky/20">
+        <button onClick={() => setOpen(true)} className="flex items-center gap-2 px-5 py-2.5 bg-sky text-white rounded-xl text-sm font-bold hover:bg-sky/90 transition-all shadow-lg shadow-sky/20">
           <Plus size={18} />
           Nouveau dossier
         </button>
@@ -70,7 +111,7 @@ export default function Dossiers() {
                 const cls = classificationConfig[d.scoringResult.classification];
                 return (
                   <motion.tr key={d.id}
-                    initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
+                    initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i * 0.04, 0.5) }}
                     className="border-b border-border hover:bg-mist transition-colors">
                     <td className="p-4 text-sm font-mono text-muted-foreground">{d.clientCode}</td>
                     <td className="p-4 font-bold text-sm text-navy">{d.debtorName}</td>
@@ -107,6 +148,8 @@ export default function Dossiers() {
           </table>
         </div>
       </div>
+
+      <NouveauDossierModal open={open} onClose={() => setOpen(false)} onCreated={load} />
     </div>
   );
 }
