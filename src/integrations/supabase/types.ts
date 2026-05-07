@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      dossiers: {
+        Row: {
+          amount: number
+          assigned_to: string | null
+          client_code: string
+          created_at: string
+          debtor_email: string | null
+          debtor_name: string
+          debtor_phone: string | null
+          due_date: string | null
+          id: string
+          management_level: string | null
+          notes: string | null
+          status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          assigned_to?: string | null
+          client_code: string
+          created_at?: string
+          debtor_email?: string | null
+          debtor_name: string
+          debtor_phone?: string | null
+          due_date?: string | null
+          id?: string
+          management_level?: string | null
+          notes?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          assigned_to?: string | null
+          client_code?: string
+          created_at?: string
+          debtor_email?: string | null
+          debtor_name?: string
+          debtor_phone?: string | null
+          due_date?: string | null
+          id?: string
+          management_level?: string | null
+          notes?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
