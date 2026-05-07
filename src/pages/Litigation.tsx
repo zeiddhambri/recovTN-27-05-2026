@@ -10,6 +10,7 @@ import {
   litigationCases, STAGE_CONFIG, TYPE_LABELS, KANBAN_STAGES,
   totalAmount, totalRecovered, type CaseStage, type CaseType,
 } from '@/lib/litigation-mock';
+import NouveauDossierContentieuxModal from '@/components/litigation/NouveauDossierContentieuxModal';
 
 const fmtTND = (n: number) => `${(n / 1000).toFixed(0)}k TND`;
 const fmtFull = (n: number) => `${n.toLocaleString('fr-FR')} TND`;
@@ -20,6 +21,7 @@ export default function Litigation() {
   const [search, setSearch] = useState('');
   const [stageFilter, setStageFilter] = useState<CaseStage | 'all'>('all');
   const [typeFilter, setTypeFilter] = useState<CaseType | 'all'>('all');
+  const [modalOpen, setModalOpen] = useState(false);
 
   // ─── Stats ───
   const stats = useMemo(() => {
@@ -65,10 +67,11 @@ export default function Litigation() {
           <h1 className="text-3xl font-serif-display text-[hsl(var(--charcoal))] tracking-tight">Gestion du contentieux</h1>
           <p className="text-muted-foreground text-sm mt-1">Pilotage des procédures judiciaires de recouvrement.</p>
         </div>
-        <button className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-[hsl(var(--crimson))] text-white text-sm font-bold shadow-sm hover:shadow-md transition">
+        <button onClick={() => setModalOpen(true)} className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-[hsl(var(--crimson))] text-white text-sm font-bold shadow-sm hover:shadow-md transition">
           <Plus size={16} /> Nouveau dossier
         </button>
       </div>
+      <NouveauDossierContentieuxModal open={modalOpen} onClose={() => setModalOpen(false)} />
 
       {/* ─── Stats row ─── */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

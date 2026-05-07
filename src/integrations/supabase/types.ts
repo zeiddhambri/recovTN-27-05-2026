@@ -65,6 +65,92 @@ export type Database = {
         }
         Relationships: []
       }
+      dossiers_contentieux: {
+        Row: {
+          amount: number
+          court_level: string
+          created_at: string
+          debtor_name: string
+          estimated_legal_fees: number
+          guarantee: string
+          id: string
+          last_acknowledgment_date: string | null
+          lawyer_id: string | null
+          observations: string | null
+          recommendation: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          court_level?: string
+          created_at?: string
+          debtor_name: string
+          estimated_legal_fees?: number
+          guarantee?: string
+          id?: string
+          last_acknowledgment_date?: string | null
+          lawyer_id?: string | null
+          observations?: string | null
+          recommendation?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          court_level?: string
+          created_at?: string
+          debtor_name?: string
+          estimated_legal_fees?: number
+          guarantee?: string
+          id?: string
+          last_acknowledgment_date?: string | null
+          lawyer_id?: string | null
+          observations?: string | null
+          recommendation?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dossiers_contentieux_lawyer_id_fkey"
+            columns: ["lawyer_id"]
+            isOneToOne: false
+            referencedRelation: "lawyers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lawyers: {
+        Row: {
+          created_at: string
+          email: string | null
+          firm: string | null
+          id: string
+          name: string
+          phone: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          firm?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          firm?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
