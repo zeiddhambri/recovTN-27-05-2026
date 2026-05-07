@@ -21,6 +21,7 @@ export default function Litigation() {
   const [search, setSearch] = useState('');
   const [stageFilter, setStageFilter] = useState<CaseStage | 'all'>('all');
   const [typeFilter, setTypeFilter] = useState<CaseType | 'all'>('all');
+  const [modalOpen, setModalOpen] = useState(false);
 
   // ─── Stats ───
   const stats = useMemo(() => {
