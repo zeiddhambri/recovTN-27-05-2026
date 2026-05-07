@@ -10,6 +10,7 @@ import {
   litigationCases, STAGE_CONFIG, TYPE_LABELS, KANBAN_STAGES,
   totalAmount, totalRecovered, type CaseStage, type CaseType,
 } from '@/lib/litigation-mock';
+import NouveauDossierContentieuxModal from '@/components/litigation/NouveauDossierContentieuxModal';
 
 const fmtTND = (n: number) => `${(n / 1000).toFixed(0)}k TND`;
 const fmtFull = (n: number) => `${n.toLocaleString('fr-FR')} TND`;
