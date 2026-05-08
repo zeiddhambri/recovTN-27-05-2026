@@ -70,7 +70,10 @@ export type Database = {
           amount: number
           court_level: string
           created_at: string
+          debtor_email: string | null
           debtor_name: string
+          debtor_phone: string | null
+          due_date: string | null
           estimated_legal_fees: number
           guarantee: string
           id: string
@@ -78,6 +81,9 @@ export type Database = {
           lawyer_id: string | null
           observations: string | null
           recommendation: string | null
+          reference: string | null
+          source_file_name: string | null
+          source_file_url: string | null
           status: string
           updated_at: string
           user_id: string
@@ -86,7 +92,10 @@ export type Database = {
           amount?: number
           court_level?: string
           created_at?: string
+          debtor_email?: string | null
           debtor_name: string
+          debtor_phone?: string | null
+          due_date?: string | null
           estimated_legal_fees?: number
           guarantee?: string
           id?: string
@@ -94,6 +103,9 @@ export type Database = {
           lawyer_id?: string | null
           observations?: string | null
           recommendation?: string | null
+          reference?: string | null
+          source_file_name?: string | null
+          source_file_url?: string | null
           status?: string
           updated_at?: string
           user_id: string
@@ -102,7 +114,10 @@ export type Database = {
           amount?: number
           court_level?: string
           created_at?: string
+          debtor_email?: string | null
           debtor_name?: string
+          debtor_phone?: string | null
+          due_date?: string | null
           estimated_legal_fees?: number
           guarantee?: string
           id?: string
@@ -110,6 +125,9 @@ export type Database = {
           lawyer_id?: string | null
           observations?: string | null
           recommendation?: string | null
+          reference?: string | null
+          source_file_name?: string | null
+          source_file_url?: string | null
           status?: string
           updated_at?: string
           user_id?: string
