@@ -169,6 +169,114 @@ export type Database = {
         }
         Relationships: []
       }
+      leasing_portfolio: {
+        Row: {
+          ai_confidence: number | null
+          asset_description: string | null
+          asset_type: string | null
+          asset_value: number
+          contract_ref: string | null
+          contract_status: string
+          created_at: string
+          duration_months: number | null
+          end_date: string | null
+          id: string
+          imported_at: string
+          interest_rate: number | null
+          lessee_email: string | null
+          lessee_id: string | null
+          lessee_name: string
+          lessee_phone: string | null
+          maturity_date: string | null
+          monthly_rent: number
+          next_payment_date: string | null
+          notes: string | null
+          overdue_amount: number
+          overdue_days: number
+          payment_frequency: string | null
+          remaining_capital: number
+          residual_value: number
+          risk_level: string | null
+          risk_score: number
+          source_file_name: string | null
+          source_file_url: string | null
+          start_date: string | null
+          total_amount: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_confidence?: number | null
+          asset_description?: string | null
+          asset_type?: string | null
+          asset_value?: number
+          contract_ref?: string | null
+          contract_status?: string
+          created_at?: string
+          duration_months?: number | null
+          end_date?: string | null
+          id?: string
+          imported_at?: string
+          interest_rate?: number | null
+          lessee_email?: string | null
+          lessee_id?: string | null
+          lessee_name: string
+          lessee_phone?: string | null
+          maturity_date?: string | null
+          monthly_rent?: number
+          next_payment_date?: string | null
+          notes?: string | null
+          overdue_amount?: number
+          overdue_days?: number
+          payment_frequency?: string | null
+          remaining_capital?: number
+          residual_value?: number
+          risk_level?: string | null
+          risk_score?: number
+          source_file_name?: string | null
+          source_file_url?: string | null
+          start_date?: string | null
+          total_amount?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_confidence?: number | null
+          asset_description?: string | null
+          asset_type?: string | null
+          asset_value?: number
+          contract_ref?: string | null
+          contract_status?: string
+          created_at?: string
+          duration_months?: number | null
+          end_date?: string | null
+          id?: string
+          imported_at?: string
+          interest_rate?: number | null
+          lessee_email?: string | null
+          lessee_id?: string | null
+          lessee_name?: string
+          lessee_phone?: string | null
+          maturity_date?: string | null
+          monthly_rent?: number
+          next_payment_date?: string | null
+          notes?: string | null
+          overdue_amount?: number
+          overdue_days?: number
+          payment_frequency?: string | null
+          remaining_capital?: number
+          residual_value?: number
+          risk_level?: string | null
+          risk_score?: number
+          source_file_name?: string | null
+          source_file_url?: string | null
+          start_date?: string | null
+          total_amount?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null

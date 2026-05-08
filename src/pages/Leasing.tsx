@@ -7,7 +7,7 @@ import {
 } from 'recharts';
 import {
   Plus, Search, Download, ChevronRight, AlertCircle, Calendar,
-  TrendingUp, Wallet, Clock, Activity, FileX, ShieldAlert,
+  TrendingUp, Wallet, Clock, Activity, FileX, ShieldAlert, Sparkles,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -127,9 +127,14 @@ export default function Leasing() {
           <h1 className="text-3xl font-serif-display text-[hsl(var(--charcoal))] tracking-tight">Portefeuille Leasing</h1>
           <p className="text-muted-foreground text-sm mt-1">Gestion des contrats de crédit-bail.</p>
         </div>
-        <Link to="/leasing/new" className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-teal-600 text-white text-sm font-bold shadow-sm hover:bg-teal-700 transition">
-          <Plus size={16} /> Nouveau contrat
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link to="/leasing/import" className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-rose-500 text-white text-sm font-bold shadow-sm hover:opacity-90 transition">
+            <Sparkles size={16} /> Import IA
+          </Link>
+          <Link to="/leasing/new" className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-teal-600 text-white text-sm font-bold shadow-sm hover:bg-teal-700 transition">
+            <Plus size={16} /> Nouveau contrat
+          </Link>
+        </div>
       </div>
 
       {/* 5 KPIs */}
