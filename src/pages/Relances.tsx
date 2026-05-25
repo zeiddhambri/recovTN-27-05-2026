@@ -35,11 +35,17 @@ export default function Relances() {
           <h1 className="text-3xl font-black text-navy tracking-tight font-syne">Moteur de Relance</h1>
           <p className="text-muted-foreground mt-1">Scénarios de relance automatisés multicanaux.</p>
         </div>
-        <button className="flex items-center gap-2 px-5 py-2.5 bg-sky text-white rounded-xl text-sm font-bold hover:bg-sky/90 transition-all shadow-lg shadow-sky/20">
+        <button onClick={() => setModalOpen(true)} className="flex items-center gap-2 px-5 py-2.5 bg-sky text-white rounded-xl text-sm font-bold hover:bg-sky/90 transition-all shadow-lg shadow-sky/20">
           <Zap size={18} />
           Nouveau scénario
         </button>
       </div>
+
+      <NouveauScenarioModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onCreate={(sc) => setScenarios([sc, ...scenarios])}
+      />
 
       {/* Stats bar */}
       <RelanceStats />
