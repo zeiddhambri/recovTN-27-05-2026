@@ -159,7 +159,7 @@ function ScenariosTab({ scenarios, selectedScenario, onSelect }: { scenarios: Re
       {/* Scenario detail - workflow timeline */}
       <div className="lg:col-span-2">
         {selectedScenario ? (
-          <ScenarioDetail scenario={mockScenarios.find(s => s.id === selectedScenario)!} />
+          <ScenarioDetail scenario={scenarios.find(s => s.id === selectedScenario)!} />
         ) : (
           <div className="bg-card rounded-2xl border border-border p-12 flex flex-col items-center justify-center text-center h-full min-h-[400px]">
             <Eye size={40} className="text-muted-foreground/30 mb-4" />
