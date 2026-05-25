@@ -67,7 +67,7 @@ export default function Relances() {
       </div>
 
       {activeTab === 'scenarios' && (
-        <ScenariosTab selectedScenario={selectedScenario} onSelect={setSelectedScenario} />
+        <ScenariosTab scenarios={scenarios} selectedScenario={selectedScenario} onSelect={setSelectedScenario} />
       )}
       {activeTab === 'suivi' && (
         <SuiviTab selectedDossier={selectedDossier} onSelect={setSelectedDossier} searchQuery={searchQuery} onSearch={setSearchQuery} />
