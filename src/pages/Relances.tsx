@@ -14,6 +14,7 @@ import {
   MessageSquare, Mail, Phone, Send, Eye,
   ArrowRight, Filter, Search,
 } from 'lucide-react';
+import NouveauScenarioModal from '@/components/relance/NouveauScenarioModal';
 
 const canalIcons: Record<string, typeof Mail> = {
   sms: MessageSquare, email: Mail, whatsapp: Send, appel: Phone,
@@ -24,6 +25,8 @@ export default function Relances() {
   const [selectedScenario, setSelectedScenario] = useState<string | null>(null);
   const [selectedDossier, setSelectedDossier] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [scenarios, setScenarios] = useState<RelanceScenario[]>(mockScenarios);
 
   return (
     <div className="space-y-8">
