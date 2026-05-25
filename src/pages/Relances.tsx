@@ -112,12 +112,12 @@ function RelanceStats() {
   );
 }
 
-function ScenariosTab({ selectedScenario, onSelect }: { selectedScenario: string | null; onSelect: (id: string | null) => void }) {
+function ScenariosTab({ scenarios, selectedScenario, onSelect }: { scenarios: RelanceScenario[]; selectedScenario: string | null; onSelect: (id: string | null) => void }) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Scenario list */}
       <div className="lg:col-span-1 space-y-4">
-        {mockScenarios.map((sc, i) => (
+        {scenarios.map((sc, i) => (
           <motion.div key={sc.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}
             onClick={() => onSelect(selectedScenario === sc.id ? null : sc.id)}
             className={cn("bg-card rounded-2xl border p-5 cursor-pointer transition-all hover:shadow-md",
