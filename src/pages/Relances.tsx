@@ -14,6 +14,7 @@ import {
   MessageSquare, Mail, Phone, Send, Eye,
   ArrowRight, Filter, Search,
 } from 'lucide-react';
+import NouveauScenarioModal from '@/components/relance/NouveauScenarioModal';
 
 const canalIcons: Record<string, typeof Mail> = {
   sms: MessageSquare, email: Mail, whatsapp: Send, appel: Phone,
@@ -24,6 +25,8 @@ export default function Relances() {
   const [selectedScenario, setSelectedScenario] = useState<string | null>(null);
   const [selectedDossier, setSelectedDossier] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [scenarios, setScenarios] = useState<RelanceScenario[]>(mockScenarios);
 
   return (
     <div className="space-y-8">
@@ -32,11 +35,17 @@ export default function Relances() {
           <h1 className="text-3xl font-black text-navy tracking-tight font-syne">Moteur de Relance</h1>
           <p className="text-muted-foreground mt-1">Scénarios de relance automatisés multicanaux.</p>
         </div>
-        <button className="flex items-center gap-2 px-5 py-2.5 bg-sky text-white rounded-xl text-sm font-bold hover:bg-sky/90 transition-all shadow-lg shadow-sky/20">
+        <button onClick={() => setModalOpen(true)} className="flex items-center gap-2 px-5 py-2.5 bg-sky text-white rounded-xl text-sm font-bold hover:bg-sky/90 transition-all shadow-lg shadow-sky/20">
           <Zap size={18} />
           Nouveau scénario
         </button>
       </div>
+
+      <NouveauScenarioModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onCreate={(sc) => setScenarios([sc, ...scenarios])}
+      />
 
       {/* Stats bar */}
       <RelanceStats />
@@ -58,7 +67,7 @@ export default function Relances() {
       </div>
 
       {activeTab === 'scenarios' && (
-        <ScenariosTab selectedScenario={selectedScenario} onSelect={setSelectedScenario} />
+        <ScenariosTab scenarios={scenarios} selectedScenario={selectedScenario} onSelect={setSelectedScenario} />
       )}
       {activeTab === 'suivi' && (
         <SuiviTab selectedDossier={selectedDossier} onSelect={setSelectedDossier} searchQuery={searchQuery} onSearch={setSearchQuery} />
@@ -103,12 +112,12 @@ function RelanceStats() {
   );
 }
 
-function ScenariosTab({ selectedScenario, onSelect }: { selectedScenario: string | null; onSelect: (id: string | null) => void }) {
+function ScenariosTab({ scenarios, selectedScenario, onSelect }: { scenarios: RelanceScenario[]; selectedScenario: string | null; onSelect: (id: string | null) => void }) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Scenario list */}
       <div className="lg:col-span-1 space-y-4">
-        {mockScenarios.map((sc, i) => (
+        {scenarios.map((sc, i) => (
           <motion.div key={sc.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}
             onClick={() => onSelect(selectedScenario === sc.id ? null : sc.id)}
             className={cn("bg-card rounded-2xl border p-5 cursor-pointer transition-all hover:shadow-md",
@@ -150,7 +159,7 @@ function ScenariosTab({ selectedScenario, onSelect }: { selectedScenario: string
       {/* Scenario detail - workflow timeline */}
       <div className="lg:col-span-2">
         {selectedScenario ? (
-          <ScenarioDetail scenario={mockScenarios.find(s => s.id === selectedScenario)!} />
+          <ScenarioDetail scenario={scenarios.find(s => s.id === selectedScenario)!} />
         ) : (
           <div className="bg-card rounded-2xl border border-border p-12 flex flex-col items-center justify-center text-center h-full min-h-[400px]">
             <Eye size={40} className="text-muted-foreground/30 mb-4" />
