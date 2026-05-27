@@ -12,8 +12,9 @@ import {
   Zap, Play, Pause, ChevronRight, ChevronDown,
   Clock, CheckCircle2, XCircle, AlertCircle,
   MessageSquare, Mail, Phone, Send, Eye,
-  ArrowRight, Filter, Search,
+  ArrowRight, Filter, Search, Brain,
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import NouveauScenarioModal from '@/components/relance/NouveauScenarioModal';
 
 const canalIcons: Record<string, typeof Mail> = {
@@ -35,10 +36,16 @@ export default function Relances() {
           <h1 className="text-3xl font-black text-navy tracking-tight font-syne">Moteur de Relance</h1>
           <p className="text-muted-foreground mt-1">Scénarios de relance automatisés multicanaux.</p>
         </div>
-        <button onClick={() => setModalOpen(true)} className="flex items-center gap-2 px-5 py-2.5 bg-sky text-white rounded-xl text-sm font-bold hover:bg-sky/90 transition-all shadow-lg shadow-sky/20">
-          <Zap size={18} />
-          Nouveau scénario
-        </button>
+        <div className="flex items-center gap-2">
+          <Link to="/relances/decision-credit" className="flex items-center gap-2 px-5 py-2.5 bg-navy text-white rounded-xl text-sm font-bold hover:bg-navy/90 transition-all shadow-lg shadow-navy/20">
+            <Brain size={18} />
+            Moteur Décision Crédit
+          </Link>
+          <button onClick={() => setModalOpen(true)} className="flex items-center gap-2 px-5 py-2.5 bg-sky text-white rounded-xl text-sm font-bold hover:bg-sky/90 transition-all shadow-lg shadow-sky/20">
+            <Zap size={18} />
+            Nouveau scénario
+          </button>
+        </div>
       </div>
 
       <NouveauScenarioModal

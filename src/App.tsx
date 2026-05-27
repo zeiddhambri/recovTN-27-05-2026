@@ -23,6 +23,7 @@ import Reporting from "./pages/Reporting";
 import Settings from "./pages/Settings";
 import Scoring from "./pages/Scoring";
 import Relances from "./pages/Relances";
+import DecisionCredit from "./pages/DecisionCredit";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -53,6 +54,7 @@ const App = () => (
             <Route path="/reporting" element={<Reporting />} />
             <Route path="/scoring" element={<Scoring />} />
             <Route path="/relances" element={<Relances />} />
+            <Route path="/relances/decision-credit" element={<DecisionCredit />} />
             <Route path="/settings" element={<Settings />} />
           </Route>
           </Route>
