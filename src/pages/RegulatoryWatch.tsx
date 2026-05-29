@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { ShieldCheck, Search, Plus, ExternalLink, CheckCircle2, AlertTriangle, Clock } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ShieldCheck, Search, Plus, ExternalLink, CheckCircle2, AlertTriangle, Clock, Brain, Sparkles, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
@@ -186,6 +187,59 @@ export default function RegulatoryWatch() {
           })}
         </div>
       )}
+
+      {/* AI Credit Underwriting & IFRS 9 Engine */}
+      <section className="mt-12">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="h-px flex-1 bg-border" />
+          <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Moteur IA Conformité</span>
+          <div className="h-px flex-1 bg-border" />
+        </div>
+        <Link to="/regulatory/ifrs9-engine" className="block group">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="relative overflow-hidden rounded-2xl border border-sky/30 bg-gradient-to-br from-navy via-navy to-sky/30 p-8 text-white hover:shadow-xl hover:shadow-sky/20 transition-all"
+          >
+            <div className="absolute top-0 right-0 w-64 h-64 bg-sky/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-gold/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+            <div className="relative flex items-start justify-between gap-6">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-full bg-gold/20 text-gold">
+                    Nouveau · Bâle III + IFRS 9
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-white/60">Aide à la décision</span>
+                </div>
+                <h2 className="text-2xl md:text-3xl font-black font-syne tracking-tight flex items-center gap-3">
+                  <Brain size={28} className="text-sky" />
+                  AI Credit Underwriting & IFRS 9 Engine
+                </h2>
+                <p className="text-sm text-white/80 mt-3 max-w-2xl leading-relaxed">
+                  Analyse crédit assistée par IA combinant les 5 piliers prudentiels Bâle III et le calibrage IFRS 9 :
+                  test SPPI, classification anticipée par bucket, détection ASRC (retard &gt;30j), multi-scénarios forward-looking
+                  et estimation PD/LGD. Recommandation traçable et audit trail réglementaire.
+                </p>
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {['Test SPPI', 'Bucket 1/2/3', 'ASRC / SICR', 'Forward-Looking', 'PD · LGD', 'Audit trail'].map(tag => (
+                    <span key={tag} className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-white/10 text-white/90 border border-white/10">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <div className="inline-flex items-center gap-2 mt-6 px-5 py-2.5 bg-sky text-white rounded-xl text-sm font-bold group-hover:bg-sky/90 transition-all shadow-lg shadow-sky/30">
+                  <Sparkles size={16} />
+                  Lancer une analyse
+                  <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+              <div className="hidden md:flex w-32 h-32 rounded-2xl bg-white/5 border border-white/10 items-center justify-center shrink-0 backdrop-blur">
+                <Brain size={56} className="text-sky" />
+              </div>
+            </div>
+          </motion.div>
+        </Link>
+      </section>
     </div>
   );
 }

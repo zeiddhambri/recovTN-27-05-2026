@@ -24,6 +24,7 @@ import Settings from "./pages/Settings";
 import Scoring from "./pages/Scoring";
 import Relances from "./pages/Relances";
 import DecisionCredit from "./pages/DecisionCredit";
+import Ifrs9Engine from "./pages/Ifrs9Engine";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -51,6 +52,7 @@ const App = () => (
             <Route path="/leasing/import" element={<LeasingImport />} />
             <Route path="/leasing/:id" element={<LeasingDetail />} />
             <Route path="/regulatory" element={<RegulatoryWatch />} />
+            <Route path="/regulatory/ifrs9-engine" element={<Ifrs9Engine />} />
             <Route path="/reporting" element={<Reporting />} />
             <Route path="/scoring" element={<Scoring />} />
             <Route path="/relances" element={<Relances />} />
