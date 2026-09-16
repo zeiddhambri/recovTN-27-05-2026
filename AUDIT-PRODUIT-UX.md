@@ -2,6 +2,8 @@
 ### Plateforme SaaS de pilotage du recouvrement (banques & IMF tunisiennes)
 **Date :** 16 septembre 2026 · **Périmètre :** landing page + application (13 routes protégées) · **Méthode :** revue de code complète + benchmark marché
 
+> **État d'avancement (16/09/2026) :** tout le périmètre **P0 est implémenté, vérifié (tsc + lint + build + preview) et poussé** sur `arena/01a0ac22-recovtn-27-05-2026` (commit `4281403`). Restent P1 (valeur) et P2 (différenciation).
+
 ---
 
 ## 1. Résumé exécutif
