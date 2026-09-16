@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Search, Plus, MoreVertical, Eye, Copy, FolderOpen, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Plus, MoreVertical, Eye, Copy, FolderOpen, ChevronLeft, ChevronRight, ArrowUpRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { mockDossiers, statusConfig, type DossierComplet } from '@/lib/mock-data';
-import { classificationConfig, calculerScore } from '@/lib/scoring';
+import { classificationConfig } from '@/lib/scoring';
+import { dbRowToDossier, type DossierStatus } from '@/lib/dossier-map';
 import { supabase } from '@/integrations/supabase/client';
-import type { Database } from '@/integrations/supabase/types';
 import { useAuth } from '@/contexts/AuthContext';
 import NouveauDossierModal from '@/components/dossiers/NouveauDossierModal';
 import DemoBanner from '@/components/DemoBanner';
@@ -29,35 +30,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
-type DossierRow = Database['public']['Tables']['dossiers']['Row'];
-type DossierStatus = DossierComplet['status'];
-
 const allStatuses = ['all', 'a_relancer', 'en_relance', 'promesse_paiement', 'partiellement_paye', 'paye', 'contentieux'] as const;
 const PAGE_SIZE = 8;
-
-function dbRowToDossier(r: DossierRow): DossierComplet {
-  const scoring = {
-    montant: Number(r.amount),
-    ancienneteJours: 30,
-    tauxPaiementHistorique: 50,
-    tauxReactivite: 50,
-    typologieClient: 'pme' as const,
-  };
-  const valid = (allStatuses as readonly string[]).includes(r.status ?? '');
-  return {
-    id: r.id,
-    clientCode: r.client_code,
-    debtorName: r.debtor_name,
-    amount: Number(r.amount),
-    status: (valid ? r.status : 'a_relancer') as DossierStatus,
-    managementLevel: r.management_level || 'recouvreur',
-    agent: r.assigned_to || 'Non assigné',
-    date: (r.due_date || r.created_at || '').slice(0, 10),
-    scoring,
-    scoringResult: calculerScore(scoring),
-    typologieClient: 'pme',
-  };
-}
 
 export default function Dossiers() {
   const { user } = useAuth();
@@ -273,6 +247,11 @@ export default function Dossiers() {
                           <DropdownMenuSeparator />
                           <DropdownMenuItem onClick={() => setPreview(d)}>
                             <Eye size={14} className="mr-2" /> Aperçu du dossier
+                          </DropdownMenuItem>
+                          <DropdownMenuItem asChild>
+                            <Link to={`/dossiers/${d.id}`}>
+                              <ArrowUpRight size={14} className="mr-2" /> Ouvrir la fiche
+                            </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => copyCode(d.clientCode)}>
                             <Copy size={14} className="mr-2" /> Copier le code

@@ -5,44 +5,10 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import type { Database } from '@/integrations/supabase/types';
 import { mockDossiers, statusConfig, type DossierComplet } from '@/lib/mock-data';
-import { calculerScore } from '@/lib/scoring';
+import { dbRowToDossier, type DossierStatus } from '@/lib/dossier-map';
 import { litigationCases } from '@/lib/litigation-mock';
 import DemoBanner from '@/components/DemoBanner';
-
-type DossierRow = Database['public']['Tables']['dossiers']['Row'];
-type DossierStatus = DossierComplet['status'];
-
-const VALID_STATUSES: DossierStatus[] = [
-  'a_relancer', 'en_relance', 'promesse_paiement', 'partiellement_paye', 'paye', 'contentieux',
-];
-
-function dbRowToDossier(r: DossierRow): DossierComplet {
-  const scoring = {
-    montant: Number(r.amount),
-    ancienneteJours: 30,
-    tauxPaiementHistorique: 50,
-    tauxReactivite: 50,
-    typologieClient: 'pme' as const,
-  };
-  const status: DossierStatus = VALID_STATUSES.includes(r.status as DossierStatus)
-    ? (r.status as DossierStatus)
-    : 'a_relancer';
-  return {
-    id: r.id,
-    clientCode: r.client_code,
-    debtorName: r.debtor_name,
-    amount: Number(r.amount),
-    status,
-    managementLevel: r.management_level || 'recouvreur',
-    agent: r.assigned_to || 'Non assigné',
-    date: (r.due_date || r.created_at || '').slice(0, 10),
-    scoring,
-    scoringResult: calculerScore(scoring),
-    typologieClient: 'pme',
-  };
-}
 
 /** Compact French number: 4,25 M TND / 320 k TND */
 function fmtCompact(n: number): string {
@@ -335,7 +301,7 @@ export default function Dashboard() {
             <tbody>
               {dossiers.slice(0, 5).map((d) => (
                 <tr key={d.id} className="border-b border-border hover:bg-mist transition-colors">
-                  <td className="p-4 font-bold text-sm text-navy">{d.debtorName}</td>
+                  <td className="p-4 font-bold text-sm text-navy"><Link to={`/dossiers/${d.id}`} className="hover:text-[hsl(var(--crimson))] hover:underline">{d.debtorName}</Link></td>
                   <td className="p-4 text-sm text-muted-foreground font-mono">{d.clientCode}</td>
                   <td className="p-4 text-sm font-mono">{d.amount.toLocaleString('fr-FR')} TND</td>
                   <td className="p-4">

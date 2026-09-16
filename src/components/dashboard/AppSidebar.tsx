@@ -1,7 +1,7 @@
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, FileText, Settings, LogOut, ShieldCheck,
-  PieChart, BarChart3, Home, Target, Zap, Scale, Package,
+  PieChart, BarChart3, Home, Target, Zap, Scale, Package, Sunrise,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
@@ -10,6 +10,7 @@ import { toast } from '@/hooks/use-toast';
 export const navItems = [
   { name: 'Accueil', icon: Home, path: '/' },
   { name: 'Tableau de bord', icon: LayoutDashboard, path: '/dashboard' },
+  { name: 'Ma journée', icon: Sunrise, path: '/aujourdhui' },
   { name: 'Dossiers Recouvrement', icon: FileText, path: '/dossiers' },
   { name: 'Moteur de Relance', icon: Zap, path: '/relances' },
   { name: 'Module Contentieux', icon: Scale, path: '/litigation' },

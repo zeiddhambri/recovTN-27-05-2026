@@ -2,7 +2,10 @@
 ### Plateforme SaaS de pilotage du recouvrement (banques & IMF tunisiennes)
 **Date :** 16 septembre 2026 · **Périmètre :** landing page + application (13 routes protégées) · **Méthode :** revue de code complète + benchmark marché
 
-> **État d'avancement (16/09/2026) :** tout le périmètre **P0 est implémenté, vérifié (tsc + lint + build + preview) et poussé** sur `arena/01a0ac22-recovtn-27-05-2026` (commit `4281403`). Restent P1 (valeur) et P2 (différenciation).
+> **État d'avancement (16/09/2026) :**
+> - **P0 implémenté, vérifié et poussé** (commit `4281403`).
+> - **P1-1 « Ma journée » + P1-2 fiche dossier 360° + P1-3 promesses suivies implémentés** : routes `/aujourdhui` et `/dossiers/:id`, notes et promesses persistées (tables `dossier_notes`, `payment_promises` + RLS), recommandation next-best-action transparente, page d'accueil post-login = file priorisée.
+> - Restent : P1-4 canaux réels, P1-5 recherche globale, P1-6 onboarding, puis P2.
 
 ---
 

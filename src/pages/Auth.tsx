@@ -21,7 +21,7 @@ export default function Auth() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, loading: authLoading } = useAuth();
-  const redirectTo = (location.state as { from?: string } | null)?.from || '/dashboard';
+  const redirectTo = (location.state as { from?: string } | null)?.from || '/aujourdhui';
 
   const [tab, setTab] = useState<'signin' | 'signup'>('signin');
   const [submitting, setSubmitting] = useState(false);
@@ -103,7 +103,7 @@ export default function Auth() {
       email: emailParse.data,
       password: pwParse.data,
       options: {
-        emailRedirectTo: `${window.location.origin}/dashboard`,
+        emailRedirectTo: `${window.location.origin}/aujourdhui`,
         data: { full_name: nameParse.data },
       },
     });
@@ -124,7 +124,7 @@ export default function Auth() {
     }
 
     toast({ title: 'Compte créé', description: 'Vous êtes maintenant connecté.' });
-    navigate('/dashboard', { replace: true });
+    navigate('/aujourdhui', { replace: true });
   };
 
   return (

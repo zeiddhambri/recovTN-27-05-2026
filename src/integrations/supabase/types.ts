@@ -166,6 +166,38 @@ export type Database = {
         }
         Relationships: []
       }
+      dossier_notes: {
+        Row: {
+          content: string
+          created_at: string
+          dossier_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          dossier_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          dossier_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dossier_notes_dossier_id_fkey"
+            columns: ["dossier_id"]
+            isOneToOne: false
+            referencedRelation: "dossiers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lawyers: {
         Row: {
           created_at: string
@@ -300,6 +332,50 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      payment_promises: {
+        Row: {
+          amount: number
+          channel: string
+          created_at: string
+          dossier_id: string
+          due_date: string
+          id: string
+          note: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          channel?: string
+          created_at?: string
+          dossier_id: string
+          due_date: string
+          id?: string
+          note?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          channel?: string
+          created_at?: string
+          dossier_id?: string
+          due_date?: string
+          id?: string
+          note?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_promises_dossier_id_fkey"
+            columns: ["dossier_id"]
+            isOneToOne: false
+            referencedRelation: "dossiers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {

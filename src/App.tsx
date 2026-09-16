@@ -15,6 +15,8 @@ const DashboardLayout = lazy(() => import("./components/dashboard/DashboardLayou
 const ProtectedRoute = lazy(() => import("./components/auth/ProtectedRoute"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Dossiers = lazy(() => import("./pages/Dossiers"));
+const DossierDetail = lazy(() => import("./pages/DossierDetail"));
+const MaJournee = lazy(() => import("./pages/MaJournee"));
 const Analytics = lazy(() => import("./pages/Analytics"));
 const Litigation = lazy(() => import("./pages/Litigation"));
 const LitigationDetail = lazy(() => import("./pages/LitigationDetail"));
@@ -59,6 +61,8 @@ const App = () => (
                 <Route element={<DashboardLayout />}>
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/dossiers" element={<Dossiers />} />
+            <Route path="/dossiers/:id" element={<DossierDetail />} />
+            <Route path="/aujourdhui" element={<MaJournee />} />
                   <Route path="/analytics" element={<Analytics />} />
                   <Route path="/litigation" element={<Litigation />} />
                   <Route path="/litigation/:id" element={<LitigationDetail />} />
