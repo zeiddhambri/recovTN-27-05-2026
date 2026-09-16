@@ -404,6 +404,57 @@ export type Database = {
         }
         Relationships: []
       }
+      relance_envois: {
+        Row: {
+          canal: string
+          clicked_at: string | null
+          created_at: string
+          destinataire: string
+          dossier_id: string | null
+          error: string | null
+          etape_id: string | null
+          id: string
+          opened_at: string | null
+          provider_id: string | null
+          scenario_id: string | null
+          statut: string
+          sujet: string | null
+          user_id: string
+        }
+        Insert: {
+          canal?: string
+          clicked_at?: string | null
+          created_at?: string
+          destinataire: string
+          dossier_id?: string | null
+          error?: string | null
+          etape_id?: string | null
+          id?: string
+          opened_at?: string | null
+          provider_id?: string | null
+          scenario_id?: string | null
+          statut?: string
+          sujet?: string | null
+          user_id: string
+        }
+        Update: {
+          canal?: string
+          clicked_at?: string | null
+          created_at?: string
+          destinataire?: string
+          dossier_id?: string | null
+          error?: string | null
+          etape_id?: string | null
+          id?: string
+          opened_at?: string | null
+          provider_id?: string | null
+          scenario_id?: string | null
+          statut?: string
+          sujet?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string

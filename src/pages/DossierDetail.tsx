@@ -20,6 +20,8 @@ import {
   type DossierNote, type PaymentPromise, type PromiseStatus,
 } from '@/lib/dossier-activity';
 import DemoBanner from '@/components/DemoBanner';
+import EnvoyerEmailDialog from '@/components/dossiers/EnvoyerEmailDialog';
+import { fetchEnvois, envoiStatus, type Envoi } from '@/lib/messaging';
 
 type TabKey = 'timeline' | 'notes' | 'promesses';
 
@@ -70,6 +72,8 @@ export default function DossierDetail() {
   const [showScoreWhy, setShowScoreWhy] = useState(false);
 
   const [notes, setNotes] = useState<DossierNote[]>([]);
+  const [envois, setEnvois] = useState<Envoi[]>([]);
+  const [emailOpen, setEmailOpen] = useState(false);
   const [promises, setPromises] = useState<PaymentPromise[]>([]);
   const [noteDraft, setNoteDraft] = useState('');
   const [savingNote, setSavingNote] = useState(false);
@@ -121,9 +125,14 @@ export default function DossierDetail() {
 
   const reloadActivity = async (d: DossierComplet, demo: boolean) => {
     try {
-      const [n, p] = await Promise.all([fetchNotes(d.id, demo), fetchPromises(d.id, demo)]);
+      const [n, p, e] = await Promise.all([
+        fetchNotes(d.id, demo),
+        fetchPromises(d.id, demo),
+        demo ? Promise.resolve([] as Envoi[]) : fetchEnvois(d.id),
+      ]);
       setNotes(n);
       setPromises(p);
+      setEnvois(e);
     } catch (e) {
       toast({
         title: 'Historique indisponible',
@@ -197,8 +206,19 @@ export default function DossierDetail() {
         });
       }
     });
+    envois.forEach((e) => {
+      const st = envoiStatus(e.statut);
+      events.push({
+        key: `envoi-${e.id}`,
+        date: e.created_at,
+        icon: Mail,
+        iconCls: st.cls,
+        title: `Email — ${st.label} : ${e.sujet ?? '(sans objet)'}`,
+        detail: `À ${e.destinataire}${e.opened_at ? ` · ouvert le ${fmtDateTime(e.opened_at)}` : ''}${e.clicked_at ? ` · cliqué le ${fmtDateTime(e.clicked_at)}` : ''}${e.error ? ` · ${e.error}` : ''}`,
+      });
+    });
     return events.sort((a, b) => +new Date(b.date) - +new Date(a.date));
-  }, [dossier, notes, promises]);
+  }, [dossier, notes, promises, envois]);
 
   if (loading) {
     return (
@@ -459,6 +479,14 @@ export default function DossierDetail() {
             Nouvelle promesse
           </button>
           <button
+            onClick={() => setEmailOpen(true)}
+            disabled={isDemo}
+            title={isDemo ? 'Disponible sur les dossiers réels uniquement' : 'Envoyer une relance email'}
+            className="px-3 py-2 rounded-lg bg-white/70 border border-current text-xs font-bold hover:bg-white transition disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Envoyer un email
+          </button>
+          <button
             onClick={() => goTo('#notes')}
             className="px-3 py-2 rounded-lg bg-white/70 border border-current text-xs font-bold hover:bg-white transition"
           >
@@ -466,6 +494,21 @@ export default function DossierDetail() {
           </button>
         </div>
       </div>
+
+      <EnvoyerEmailDialog
+        open={emailOpen}
+        onOpenChange={setEmailOpen}
+        dossierId={dossier.id}
+        vars={{ debiteur: dossier.debtorName, code: dossier.clientCode, montant: fmtTND(dossier.amount), echeance: fmtDate(dossier.date) }}
+        defaultTo={contact.email ?? ''}
+        storedEmail={contact.email}
+        onSent={() => {
+          reloadActivity(dossier, isDemo);
+          supabase.from('dossiers').select('debtor_email, debtor_phone').eq('id', dossier.id).single().then(({ data }) => {
+            if (data) setContact({ email: data.debtor_email, phone: data.debtor_phone });
+          });
+        }}
+      />
 
       {/* ─── Tabs ─── */}
       <div ref={tabsRef} className="flex gap-2 flex-wrap scroll-mt-20" role="tablist" aria-label="Activité du dossier">
