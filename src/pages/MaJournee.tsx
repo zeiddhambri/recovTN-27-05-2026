@@ -18,6 +18,7 @@ import {
   type PaymentPromise,
 } from '@/lib/dossier-activity';
 import DemoBanner from '@/components/DemoBanner';
+import OnboardingCard from '@/components/ma-journee/OnboardingCard';
 
 type Segment = 'all' | 'urgent' | 'promises';
 
@@ -182,6 +183,8 @@ export default function MaJournee() {
       {isDemo && (
         <DemoBanner text="Portefeuille d'exemple — créez des dossiers réels pour obtenir votre vraie file de travail." />
       )}
+
+      <OnboardingCard userId={user?.id ?? 'anon'} />
 
       {/* ─── Summary ─── */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

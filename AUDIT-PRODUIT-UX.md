@@ -7,7 +7,8 @@
 > - **P1-1 « Ma journée » + P1-2 fiche dossier 360° + P1-3 promesses suivies implémentés** : routes `/aujourdhui` et `/dossiers/:id`, notes et promesses persistées (tables `dossier_notes`, `payment_promises` + RLS), recommandation next-best-action transparente, page d'accueil post-login = file priorisée.
 > - **P1-4 canal email réel implémenté** : edge functions `send-email` (Resend) + `email-webhook` (Svix) → table `relance_envois`, dialogue d'envoi 3 modèles FR sur la fiche dossier, timeline sent/delivered/opened/clicked/bounced, état « Canal non configuré » honnête + `docs/CANAUX-EMAIL.md` (opérateur : `supabase db push`, déployer les fonctions, secrets RESEND_API_KEY/EMAIL_FROM/EMAIL_WEBHOOK_SECRET). SMS/WhatsApp → roadmap.
 > - **P1-5 recherche globale + notifications implémentés** : palette `⌘K` (`cmdk` : dossiers en direct démo + Supabase, 12 pages, 5 actions) montée dans le layout protégé, barre desktop avec recherche + cloche, sources réelles (promesses dues/en retard/rompues, emails bounced/failed/complained), marquage lu en localStorage.
-> - Restent : P1-6 onboarding, puis P2.
+> - **P1-6 onboarding « premier euro recouvré » implémenté** : carte de 4 premiers pas en tête de `/aujourdhui`, chaque étape validée par des données réelles (portefeuille importé, dossier qualifié, relance envoyée, promesse tenue), masquable par utilisateur, état de célébration.
+> - Restent : P2.
 
 ---
 
