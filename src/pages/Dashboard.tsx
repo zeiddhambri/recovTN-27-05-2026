@@ -1,58 +1,185 @@
-import { TrendingUp, Clock, AlertCircle, CheckCircle2, ArrowUpRight, ArrowDownRight, BarChart3, Gavel, ShieldCheck, Home } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { TrendingUp, Clock, AlertCircle, CheckCircle2, BarChart3, Gavel, ShieldCheck, Brain } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import type { Database } from '@/integrations/supabase/types';
+import { mockDossiers, statusConfig, type DossierComplet } from '@/lib/mock-data';
+import { calculerScore } from '@/lib/scoring';
+import { litigationCases } from '@/lib/litigation-mock';
+import DemoBanner from '@/components/DemoBanner';
 
-const cards = [
-  { title: 'Encours Total', value: '4,250,000 TND', icon: TrendingUp, color: 'sky', trend: '+12%', trendUp: true },
-  { title: 'Dossiers Actifs', value: '186', icon: Clock, color: 'gold', trend: '-2', trendUp: false },
-  { title: 'En Litige', value: '42', icon: AlertCircle, color: 'red', trend: '+1', trendUp: true },
-  { title: 'Dossiers Clos', value: '78', icon: CheckCircle2, color: 'green', trend: '+5', trendUp: true },
+type DossierRow = Database['public']['Tables']['dossiers']['Row'];
+type DossierStatus = DossierComplet['status'];
+
+const VALID_STATUSES: DossierStatus[] = [
+  'a_relancer', 'en_relance', 'promesse_paiement', 'partiellement_paye', 'paye', 'contentieux',
 ];
 
-const recentDossiers = [
-  { name: 'SOCIETE ALPHA SARL', code: 'RCV-2024-001', amount: '145,000', status: 'phase2', date: '2024-03-15' },
-  { name: 'BEN SALEM AHMED', code: 'RCV-2024-002', amount: '22,000', status: 'litige', date: '2024-03-14' },
-  { name: 'GLOBAL TECH TUNISIE', code: 'RCV-2024-003', amount: '890,000', status: 'phase1', date: '2024-03-13' },
-  { name: 'KARIM ENTERPRISES', code: 'RCV-2024-004', amount: '56,000', status: 'clos', date: '2024-03-12' },
-  { name: 'MEDITERANEE INVEST', code: 'RCV-2024-005', amount: '320,000', status: 'phase1', date: '2024-03-11' },
-];
+function dbRowToDossier(r: DossierRow): DossierComplet {
+  const scoring = {
+    montant: Number(r.amount),
+    ancienneteJours: 30,
+    tauxPaiementHistorique: 50,
+    tauxReactivite: 50,
+    typologieClient: 'pme' as const,
+  };
+  const status: DossierStatus = VALID_STATUSES.includes(r.status as DossierStatus)
+    ? (r.status as DossierStatus)
+    : 'a_relancer';
+  return {
+    id: r.id,
+    clientCode: r.client_code,
+    debtorName: r.debtor_name,
+    amount: Number(r.amount),
+    status,
+    managementLevel: r.management_level || 'recouvreur',
+    agent: r.assigned_to || 'Non assigné',
+    date: (r.due_date || r.created_at || '').slice(0, 10),
+    scoring,
+    scoringResult: calculerScore(scoring),
+    typologieClient: 'pme',
+  };
+}
 
-const upcomingEvents = [
-  { title: 'Audience TPI Tunis — Dossier ALPHA', date: '25 Mars 2024', type: 'audience' },
-  { title: 'Délai appel jugement Ben Salem', date: '28 Mars 2024', type: 'deadline' },
-  { title: 'Visite huissier — Global Tech', date: '1 Avril 2024', type: 'visit' },
-];
+/** Compact French number: 4,25 M TND / 320 k TND */
+function fmtCompact(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toLocaleString('fr-FR', { maximumFractionDigits: 2 })} M TND`;
+  if (n >= 1_000) return `${Math.round(n / 1_000).toLocaleString('fr-FR')} k TND`;
+  return `${n.toLocaleString('fr-FR')} TND`;
+}
 
-const statusColors: Record<string, string> = {
-  phase1: 'text-sky bg-sky/10',
-  phase2: 'text-gold bg-gold/10',
-  litige: 'text-red-500 bg-red-50',
-  clos: 'text-green-500 bg-green-50',
-};
+const fmtDate = (iso: string) =>
+  new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
 
-const statusLabels: Record<string, string> = {
-  phase1: 'Phase 1',
-  phase2: 'Phase 2',
-  litige: 'Litige',
-  clos: 'Clos',
+const STATUS_BAR_COLORS: Record<DossierStatus, string> = {
+  a_relancer: 'bg-blue-500',
+  en_relance: 'bg-amber-500',
+  promesse_paiement: 'bg-purple-500',
+  partiellement_paye: 'bg-orange-500',
+  paye: 'bg-green-500',
+  contentieux: 'bg-red-500',
 };
 
 export default function Dashboard() {
+  const { user } = useAuth();
+  const [dbDossiers, setDbDossiers] = useState<DossierComplet[] | null>(null);
+
+  useEffect(() => {
+    if (!user) {
+      setDbDossiers([]);
+      return;
+    }
+    supabase
+      .from('dossiers')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .then(({ data, error }) => {
+        if (error || !data) {
+          setDbDossiers([]);
+          return;
+        }
+        setDbDossiers(data.map(dbRowToDossier));
+      });
+  }, [user]);
+
+  const loading = dbDossiers === null;
+  const isDemo = !loading && (dbDossiers ?? []).length === 0;
+  const dossiers = useMemo(
+    () => (isDemo ? mockDossiers : (dbDossiers ?? [])),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isDemo, loading]
+  );
+
+  const stats = useMemo(() => {
+    const actives = dossiers.filter((d) => d.status !== 'paye');
+    const litiges = dossiers.filter((d) => d.status === 'contentieux');
+    const clos = dossiers.filter((d) => d.status === 'paye');
+    const encours = actives.reduce((s, d) => s + d.amount, 0);
+    const recovered = clos.reduce((s, d) => s + d.amount, 0);
+    const aRelancer = dossiers.filter((d) => d.status === 'a_relancer').length;
+    return { actives, litiges, clos, encours, recovered, aRelancer };
+  }, [dossiers]);
+
+  const distribution = useMemo(() => {
+    const counts = new Map<DossierStatus, number>();
+    dossiers.forEach((d) => counts.set(d.status, (counts.get(d.status) ?? 0) + 1));
+    const total = Math.max(dossiers.length, 1);
+    return [...counts.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .map(([status, count]) => ({
+        label: statusConfig[status].label,
+        pct: Math.round((count / total) * 100),
+        color: STATUS_BAR_COLORS[status],
+      }));
+  }, [dossiers]);
+
+  const upcomingHearings = useMemo(() => {
+    const all: { caseId: string; debtor: string; court: string; type: string; date: string; time: string }[] = [];
+    litigationCases.forEach((c) =>
+      c.hearings
+        .filter((h) => h.status === 'scheduled')
+        .forEach((h) =>
+          all.push({ caseId: c.id, debtor: c.debtor.name, court: h.court, type: h.type, date: h.date, time: h.time })
+        )
+    );
+    return all.sort((a, b) => +new Date(b.date) - +new Date(a.date)).slice(0, 3);
+  }, []);
+
+  const cards = [
+    {
+      title: 'Encours Total',
+      value: fmtCompact(stats.encours),
+      sub: `${stats.actives.length} dossier${stats.actives.length > 1 ? 's' : ''} actif${stats.actives.length > 1 ? 's' : ''}`,
+      icon: TrendingUp,
+      iconClass: 'bg-blue-50 text-blue-600',
+    },
+    {
+      title: 'Dossiers Actifs',
+      value: String(stats.actives.length),
+      sub: `${stats.aRelancer} à relancer`,
+      icon: Clock,
+      iconClass: 'bg-amber-50 text-amber-600',
+    },
+    {
+      title: 'En Litige',
+      value: String(stats.litiges.length),
+      sub: fmtCompact(stats.litiges.reduce((s, d) => s + d.amount, 0)),
+      icon: AlertCircle,
+      iconClass: 'bg-red-50 text-red-500',
+    },
+    {
+      title: 'Montant Recouvré',
+      value: fmtCompact(stats.recovered),
+      sub: `${stats.clos.length} dossier${stats.clos.length > 1 ? 's' : ''} clos`,
+      icon: CheckCircle2,
+      iconClass: 'bg-green-50 text-green-600',
+    },
+  ];
+
   return (
     <div className="space-y-8">
-      <div className="flex justify-between items-start">
+      <div className="flex justify-between items-start flex-wrap gap-4">
         <div>
           <h1 className="text-3xl font-black text-navy tracking-tight font-syne">Tableau de bord</h1>
           <p className="text-muted-foreground mt-1">Vue d'ensemble de votre portefeuille de recouvrement.</p>
         </div>
         <div className="flex gap-3">
-          <Link to="/analytics" className="flex items-center gap-2 px-4 py-2 bg-navy text-white rounded-xl text-xs font-bold hover:bg-navy/90 transition-all shadow-lg shadow-navy/20">
+          <Link
+            to="/analytics"
+            className="flex items-center gap-2 px-4 py-2 bg-navy text-white rounded-xl text-xs font-bold hover:bg-navy/90 transition-all shadow-lg shadow-navy/20"
+          >
             <BarChart3 size={14} />
             Analyses IA
           </Link>
         </div>
       </div>
+
+      {isDemo && (
+        <DemoBanner text="Aucun dossier dans votre base — les chiffres ci-dessous illustrent un portefeuille de démonstration. Créez votre premier dossier pour passer en réel." />
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {cards.map((card, idx) => (
@@ -64,96 +191,99 @@ export default function Dashboard() {
             className="bg-card p-6 rounded-3xl shadow-sm border border-border hover:shadow-md transition-all group"
           >
             <div className="flex items-center justify-between mb-4">
-              <div className={cn(
-                "w-12 h-12 rounded-2xl flex items-center justify-center transition-all group-hover:scale-110",
-                card.color === 'sky' && "bg-sky/10 text-sky",
-                card.color === 'gold' && "bg-gold/10 text-gold",
-                card.color === 'red' && "bg-red-50 text-red-500",
-                card.color === 'green' && "bg-green-50 text-green-500",
-              )}>
-                <card.icon size={24} />
-              </div>
-              <div className={cn(
-                "flex items-center gap-1 text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-lg",
-                card.trendUp ? "bg-green-50 text-green-600" : "bg-red-50 text-red-600"
-              )}>
-                {card.trendUp ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
-                {card.trend}
+              <div
+                className={cn(
+                  'w-12 h-12 rounded-2xl flex items-center justify-center transition-all group-hover:scale-110',
+                  card.iconClass
+                )}
+              >
+                <card.icon size={24} aria-hidden />
               </div>
             </div>
             <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">{card.title}</p>
-            <p className="text-2xl font-black text-navy">{card.value}</p>
+            <p className="text-2xl font-black text-navy">{loading ? '…' : card.value}</p>
+            <p className="text-xs text-muted-foreground mt-1 font-medium">{loading ? '' : card.sub}</p>
           </motion.div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Upcoming Events */}
+        {/* Upcoming hearings — sourced from the litigation store */}
         <div className="bg-gradient-to-br from-navy to-navy/90 rounded-[2.5rem] p-8 text-white shadow-xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-sky/10 rounded-full blur-3xl -mr-32 -mt-32" />
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
-                  <Gavel size={20} className="text-sky" />
+                  <Gavel size={20} className="text-sky" aria-hidden />
                 </div>
-                <h2 className="text-lg font-black tracking-tight font-syne">Prochaine Audience</h2>
+                <h2 className="text-lg font-black tracking-tight font-syne">Prochaines audiences</h2>
               </div>
-              <Link to="/legal" className="text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-white transition-colors">Voir l'agenda</Link>
+              <Link
+                to="/litigation"
+                className="text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-white transition-colors"
+              >
+                Voir le contentieux
+              </Link>
             </div>
-            
+
             <div className="space-y-4">
-              {upcomingEvents.map((event, i) => (
-                <div key={i} className="p-4 bg-white/5 rounded-2xl border border-white/10">
-                  <p className="text-sm font-bold mb-1">{event.title}</p>
-                  <div className="flex items-center gap-1.5 text-white/60 text-xs">
-                    <Clock size={14} />
-                    {event.date}
+              {upcomingHearings.length === 0 && (
+                <p className="text-sm text-white/70">Aucune audience planifiée pour le moment.</p>
+              )}
+              {upcomingHearings.map((h) => (
+                <Link
+                  key={`${h.caseId}-${h.date}-${h.time}`}
+                  to={`/litigation/${h.caseId}`}
+                  className="block p-4 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors"
+                >
+                  <p className="text-sm font-bold mb-1">
+                    {h.type} — {h.debtor}
+                  </p>
+                  <div className="flex items-center gap-1.5 text-white/70 text-xs">
+                    <Clock size={14} aria-hidden />
+                    {fmtDate(h.date)} à {h.time} · {h.court}
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Regulatory */}
-        <div className="bg-card rounded-[2.5rem] p-8 shadow-sm border border-border">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center">
-                <ShieldCheck size={20} className="text-gold" />
-              </div>
-              <h2 className="text-lg font-black text-navy tracking-tight font-syne">Veille Réglementaire</h2>
+        {/* Regulatory shortcut */}
+        <div className="bg-card rounded-[2.5rem] p-8 shadow-sm border border-border flex flex-col">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
+              <ShieldCheck size={20} className="text-amber-600" aria-hidden />
             </div>
-            <Link to="/regulatory" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors">Voir tout</Link>
+            <h2 className="text-lg font-black text-navy tracking-tight font-syne">Conformité & Risque</h2>
           </div>
-          
-          <div className="space-y-4">
-            {[
-              { ref: 'BCT 2024-05', title: 'Nouvelles normes provisionnement', date: '15/03/2024' },
-              { ref: 'CTAF 2023-12', title: 'Directives PPE KYC', date: '20/11/2023' },
-            ].map((c, i) => (
-              <div key={i} className="p-4 bg-mist rounded-2xl border border-border">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-sky">{c.ref}</span>
-                </div>
-                <p className="text-sm font-bold text-navy mb-1">{c.title}</p>
-                <p className="text-xs text-muted-foreground">{c.date}</p>
-              </div>
-            ))}
+          <p className="text-sm text-muted-foreground leading-relaxed mb-6">
+            Veille des circulaires BCT & CTAF, checklists de conformité et moteur d'analyse crédit IFRS 9.
+          </p>
+          <div className="mt-auto space-y-3">
+            <Link
+              to="/regulatory"
+              className="flex items-center gap-2 px-4 py-3 bg-mist border border-border rounded-xl text-sm font-bold text-navy hover:bg-border/50 transition-all"
+            >
+              <ShieldCheck size={16} aria-hidden />
+              Veille réglementaire
+            </Link>
+            <Link
+              to="/regulatory/ifrs9-engine"
+              className="flex items-center gap-2 px-4 py-3 bg-navy text-white rounded-xl text-sm font-bold hover:bg-navy/90 transition-all"
+            >
+              <Brain size={16} aria-hidden />
+              Moteur IFRS 9
+            </Link>
           </div>
         </div>
 
-        {/* Quick Stats */}
+        {/* Status distribution — computed from displayed data */}
         <div className="bg-card rounded-[2.5rem] p-8 shadow-sm border border-border">
           <h2 className="text-lg font-black text-navy tracking-tight mb-6 font-syne">Répartition par statut</h2>
           <div className="space-y-4">
-            {[
-              { label: 'Phase 1', pct: 45, color: 'bg-sky' },
-              { label: 'Phase 2', pct: 25, color: 'bg-gold' },
-              { label: 'Litige', pct: 18, color: 'bg-red-500' },
-              { label: 'Clos', pct: 12, color: 'bg-green-500' },
-            ].map((item) => (
+            {distribution.map((item) => (
               <div key={item.label}>
                 <div className="flex justify-between text-sm mb-1">
                   <span className="font-medium text-navy">{item.label}</span>
@@ -164,7 +294,7 @@ export default function Dashboard() {
                     initial={{ width: 0 }}
                     animate={{ width: `${item.pct}%` }}
                     transition={{ duration: 1, delay: 0.5 }}
-                    className={cn("h-full rounded-full", item.color)}
+                    className={cn('h-full rounded-full', item.color)}
                   />
                 </div>
               </div>
@@ -173,32 +303,49 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Recent Dossiers Table */}
+      {/* Recent dossiers */}
       <div className="bg-card rounded-3xl shadow-sm border border-border overflow-hidden">
         <div className="p-6 border-b border-border flex justify-between items-center">
           <h2 className="text-lg font-black text-navy font-syne">Dossiers récents</h2>
-          <Link to="/dossiers" className="text-xs font-bold text-sky hover:underline">Voir tous</Link>
+          <Link to="/dossiers" className="text-xs font-bold text-sky hover:underline">
+            Voir tous
+          </Link>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest border-b border-border">
-                <th className="text-left p-4">Débiteur</th>
-                <th className="text-left p-4">Code</th>
-                <th className="text-left p-4">Montant</th>
-                <th className="text-left p-4">Statut</th>
-                <th className="text-left p-4">Date</th>
+                <th scope="col" className="text-left p-4">
+                  Débiteur
+                </th>
+                <th scope="col" className="text-left p-4">
+                  Code
+                </th>
+                <th scope="col" className="text-left p-4">
+                  Montant
+                </th>
+                <th scope="col" className="text-left p-4">
+                  Statut
+                </th>
+                <th scope="col" className="text-left p-4">
+                  Date
+                </th>
               </tr>
             </thead>
             <tbody>
-              {recentDossiers.map((d, i) => (
-                <tr key={i} className="border-b border-border hover:bg-mist transition-colors">
-                  <td className="p-4 font-bold text-sm text-navy">{d.name}</td>
-                  <td className="p-4 text-sm text-muted-foreground font-mono">{d.code}</td>
-                  <td className="p-4 text-sm font-mono">{d.amount} TND</td>
+              {dossiers.slice(0, 5).map((d) => (
+                <tr key={d.id} className="border-b border-border hover:bg-mist transition-colors">
+                  <td className="p-4 font-bold text-sm text-navy">{d.debtorName}</td>
+                  <td className="p-4 text-sm text-muted-foreground font-mono">{d.clientCode}</td>
+                  <td className="p-4 text-sm font-mono">{d.amount.toLocaleString('fr-FR')} TND</td>
                   <td className="p-4">
-                    <span className={cn("text-xs font-bold px-3 py-1 rounded-full", statusColors[d.status])}>
-                      {statusLabels[d.status]}
+                    <span
+                      className={cn(
+                        'text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap',
+                        statusConfig[d.status].color
+                      )}
+                    >
+                      {statusConfig[d.status].label}
                     </span>
                   </td>
                   <td className="p-4 text-sm text-muted-foreground">{d.date}</td>

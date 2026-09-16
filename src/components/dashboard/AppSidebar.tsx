@@ -1,13 +1,13 @@
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, FileText, Settings, LogOut, ShieldCheck,
-  PieChart, BarChart3, Home, Gavel, Target, Zap, Scale, Package,
+  PieChart, BarChart3, Home, Target, Zap, Scale, Package,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from '@/hooks/use-toast';
 
-const navItems = [
+export const navItems = [
   { name: 'Accueil', icon: Home, path: '/' },
   { name: 'Tableau de bord', icon: LayoutDashboard, path: '/dashboard' },
   { name: 'Dossiers Recouvrement', icon: FileText, path: '/dossiers' },
@@ -21,23 +21,30 @@ const navItems = [
   { name: 'Paramètres', icon: Settings, path: '/settings' },
 ];
 
-export default function AppSidebar() {
+/** Shared inner content, rendered in the desktop <aside> and in the mobile drawer. */
+export function SidebarNavContent({ onNavigate }: { onNavigate?: () => void }) {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
     await signOut();
     toast({ title: 'Déconnexion', description: 'À bientôt.' });
+    onNavigate?.();
     navigate('/', { replace: true });
   };
 
-  const displayName = (user?.user_metadata as { full_name?: string } | undefined)?.full_name || user?.email || 'Utilisateur';
+  const displayName =
+    (user?.user_metadata as { full_name?: string } | undefined)?.full_name || user?.email || 'Utilisateur';
   const initial = (displayName[0] || 'U').toUpperCase();
 
   return (
-    <aside className="w-64 h-screen bg-navy text-white flex flex-col border-r border-white/5 fixed left-0 top-0 z-50">
+    <div className="flex flex-col h-full">
       <div className="p-6">
-        <Link to="/" className="text-2xl font-extrabold tracking-tighter font-syne hover:opacity-80 transition-opacity">
+        <Link
+          to="/"
+          onClick={onNavigate}
+          className="text-2xl font-extrabold tracking-tighter font-syne hover:opacity-80 transition-opacity"
+        >
           <span className="text-sky">Recov</span>TN
         </Link>
         <div className="mt-2 flex items-center gap-2 px-2 py-1 bg-white/5 rounded-lg border border-white/10">
@@ -46,19 +53,22 @@ export default function AppSidebar() {
         </div>
       </div>
 
-      <nav className="flex-1 px-4 py-6 space-y-2">
+      <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto" aria-label="Navigation principale">
         {navItems.map((item) => (
           <NavLink
             key={item.path}
             to={item.path}
-            className={({ isActive }) => cn(
-              "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all group",
-              isActive 
-                ? "bg-sky text-white shadow-lg shadow-sky/20" 
-                : "text-white/60 hover:text-white hover:bg-white/5"
-            )}
+            onClick={onNavigate}
+            className={({ isActive }) =>
+              cn(
+                'flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all group',
+                isActive
+                  ? 'bg-sky text-white shadow-lg shadow-sky/20'
+                  : 'text-white/60 hover:text-white hover:bg-white/5'
+              )
+            }
           >
-            <item.icon size={20} />
+            <item.icon size={20} aria-hidden />
             {item.name}
           </NavLink>
         ))}
@@ -66,18 +76,31 @@ export default function AppSidebar() {
 
       <div className="p-4 border-t border-white/5">
         <div className="flex items-center gap-3 px-4 py-4 bg-white/5 rounded-2xl mb-4">
-          <div className="w-10 h-10 rounded-full bg-sky/20 flex items-center justify-center text-sky font-bold">{initial}</div>
+          <div className="w-10 h-10 rounded-full bg-sky/20 flex items-center justify-center text-sky font-bold">
+            {initial}
+          </div>
           <div className="flex flex-col min-w-0">
             <span className="text-sm font-bold truncate">{displayName}</span>
             <span className="text-[10px] text-white/40 truncate">{user?.email}</span>
           </div>
         </div>
 
-        <button onClick={handleSignOut} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-red-400/10 transition-all">
-          <LogOut size={20} />
+        <button
+          onClick={handleSignOut}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-red-400/10 transition-all"
+        >
+          <LogOut size={20} aria-hidden />
           Déconnexion
         </button>
       </div>
+    </div>
+  );
+}
+
+export default function AppSidebar() {
+  return (
+    <aside className="hidden lg:flex w-64 h-screen bg-navy text-white flex-col border-r border-white/5 fixed left-0 top-0 z-50">
+      <SidebarNavContent />
     </aside>
   );
 }

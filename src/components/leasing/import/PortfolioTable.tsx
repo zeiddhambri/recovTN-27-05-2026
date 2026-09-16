@@ -50,11 +50,11 @@ export function PortfolioTable({ rows, onChanged }: { rows: LeasingRow[]; onChan
     if (statusFilter !== 'all') out = out.filter(r => r.contract_status === statusFilter);
     if (riskFilter !== 'all') out = out.filter(r => r.risk_level === riskFilter);
     out = [...out].sort((a, b) => {
-      const av = a[sortKey] as any; const bv = b[sortKey] as any;
+      const av: unknown = a[sortKey]; const bv: unknown = b[sortKey];
       if (av == null && bv == null) return 0;
       if (av == null) return 1;
       if (bv == null) return -1;
-      if (typeof av === 'number') return sortDir === 'asc' ? av - bv : bv - av;
+      if (typeof av === 'number' && typeof bv === 'number') return sortDir === 'asc' ? av - bv : bv - av;
       return sortDir === 'asc' ? String(av).localeCompare(String(bv)) : String(bv).localeCompare(String(av));
     });
     return out;

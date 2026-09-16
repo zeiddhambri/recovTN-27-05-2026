@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import DemoBanner from '@/components/DemoBanner';
 import { mockDossiers, DossierComplet } from '@/lib/mock-data';
 import { ClientClassification, classificationConfig } from '@/lib/scoring';
-import { Target, TrendingUp, AlertTriangle, ShieldCheck, Users, ArrowUpDown, Search, Filter } from 'lucide-react';
+import { Target, AlertTriangle, ShieldCheck, ArrowUpDown, Search, Inbox } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
 
 const classificationIcons: Record<ClientClassification, typeof ShieldCheck> = {
@@ -64,6 +65,8 @@ export default function Scoring() {
         <p className="text-muted-foreground mt-1">Analyse de risque et classification des clients débiteurs.</p>
       </div>
 
+      <DemoBanner />
+
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <KpiCard icon={Target} label="Score moyen" value={`${stats.avgScore}/100`} accent="text-sky" />
@@ -115,7 +118,7 @@ export default function Scoring() {
         <div className="relative flex-1 max-w-md">
           <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
-            type="text" placeholder="Rechercher un client..."
+            type="text" placeholder="Rechercher un client..." aria-label="Rechercher un client"
             value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
             className="w-full pl-11 pr-4 py-3 rounded-xl bg-card border border-border text-sm focus:outline-none focus:ring-2 focus:ring-sky/20 focus:border-sky transition-all"
           />
@@ -147,6 +150,13 @@ export default function Scoring() {
           <ClientScoringCard key={d.id} dossier={d} index={i} />
         ))}
       </div>
+      {sorted.length === 0 && (
+        <div className="flex flex-col items-center gap-2 py-14 text-center">
+          <Inbox size={28} className="text-muted-foreground" aria-hidden />
+          <p className="font-bold text-navy">Aucun client dans ce segment</p>
+          <p className="text-sm text-muted-foreground">Modifiez la recherche ou le filtre de classification.</p>
+        </div>
+      )}
     </div>
   );
 }

@@ -7,6 +7,7 @@ import {
   CheckCircle2, Loader2, Gavel, FileCheck, CircleDollarSign, StickyNote,
   Edit3, Lock, Sparkles,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   findCase, STAGE_CONFIG, TYPE_LABELS, KANBAN_STAGES, totalAmount, totalRecovered,
@@ -497,7 +498,7 @@ function Line({ label, value }: { label: string; value: number }) {
 function NotesTab({ notes }: { notes: CaseNote[] }) {
   const [content, setContent] = useState('');
   const [visibility, setVisibility] = useState<CaseNote['visibility']>('internal');
-  const VIS_CONFIG: Record<CaseNote['visibility'], { label: string; icon: any; color: string }> = {
+  const VIS_CONFIG: Record<CaseNote['visibility'], { label: string; icon: LucideIcon; color: string }> = {
     internal: { label: 'Interne', icon: Lock,         color: 'bg-slate-100 text-slate-700' },
     lawyer:   { label: 'Avocat',  icon: User,         color: 'bg-purple-100 text-purple-700' },
     bailiff:  { label: 'Huissier',icon: Gavel,        color: 'bg-orange-100 text-orange-700' },
@@ -658,7 +659,7 @@ function DocumentGeneratorModal({ caseObj, onClose }: { caseObj: ReturnType<type
     </motion.div>
   );
 }
-function Pill({ icon: Icon, text }: { icon: any; text: string }) {
+function Pill({ icon: Icon, text }: { icon: LucideIcon; text: string }) {
   return (
     <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-secondary text-[hsl(var(--charcoal))]">
       <Icon size={12} className="text-muted-foreground" />

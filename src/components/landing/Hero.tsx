@@ -2,10 +2,10 @@ import { motion } from 'framer-motion';
 import heroImg from '@/assets/hero-recouvrement.jpg';
 
 const tabs = [
-  { label: 'Plateforme de pilotage du recouvrement', active: true },
-  { label: 'Moteur de relance multicanal', active: false },
-  { label: 'Scoring de risque client', active: false },
-  { label: 'Reporting BCT & CTAF', active: false },
+  { label: 'Plateforme de pilotage du recouvrement', href: '#features' },
+  { label: 'Moteur de relance multicanal', href: '#feature-relance' },
+  { label: 'Scoring de risque client', href: '#feature-scoring' },
+  { label: 'Reporting BCT & CTAF', href: '#feature-reporting' },
 ];
 
 export default function Hero() {
@@ -17,6 +17,7 @@ export default function Hero() {
           alt="Analyse de portefeuille de créances bancaires"
           width={1920}
           height={1080}
+          decoding="async"
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/25 to-transparent" />
@@ -45,22 +46,23 @@ export default function Hero() {
 
       <div className="border-b border-border bg-white">
         <div className="container-atr">
-          <div className="flex flex-wrap items-stretch gap-x-2 lg:gap-x-12 overflow-x-auto">
+          <nav aria-label="Accès rapide aux modules" className="flex flex-wrap items-stretch gap-x-2 lg:gap-x-12 overflow-x-auto">
             {tabs.map((t, i) => (
-              <button
-                key={i}
+              <a
+                key={t.href + i}
+                href={t.href}
                 className={
                   'relative py-6 text-[14px] font-medium whitespace-nowrap transition-colors ' +
-                  (t.active ? 'text-charcoal' : 'text-slate hover:text-charcoal')
+                  (i === 0 ? 'text-charcoal' : 'text-slate hover:text-charcoal')
                 }
               >
                 {t.label}
-                {t.active && (
-                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-crimson" />
+                {i === 0 && (
+                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-crimson" aria-hidden />
                 )}
-              </button>
+              </a>
             ))}
-          </div>
+          </nav>
         </div>
       </div>
     </section>

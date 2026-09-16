@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Save, Loader2, FileText, User, Calendar, Wallet, Shield } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
@@ -97,8 +98,8 @@ export default function LeasingNew() {
       if (error) throw error;
       toast.success('Contrat créé avec succès');
       navigate('/leasing');
-    } catch (err: any) {
-      toast.error('Erreur', { description: err.message });
+    } catch (err) {
+      toast.error('Erreur', { description: err instanceof Error ? err.message : 'Erreur inconnue' });
     } finally {
       setSaving(false);
     }
@@ -198,7 +199,7 @@ export default function LeasingNew() {
   );
 }
 
-function Section({ icon: Icon, title, children }: { icon: any; title: string; children: React.ReactNode }) {
+function Section({ icon: Icon, title, children }: { icon: LucideIcon; title: string; children: React.ReactNode }) {
   return (
     <div className="bg-card rounded-2xl border border-border shadow-sm p-6">
       <div className="flex items-center gap-2 mb-4">

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Search, User, Globe } from 'lucide-react';
+import { Menu, X, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
 
@@ -15,16 +15,16 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
-    { name: 'Accueil', href: '#' },
-    { name: 'Services', href: '#features' },
-    { name: 'Conseils & pratiques', href: '#problem' },
-    { name: 'Publications', href: '#pricing' },
-    { name: 'À propos', href: '#about' },
-    { name: 'Nous contacter', href: '#contact' },
+    { name: 'Accueil', href: '#top' },
+    { name: 'Approche', href: '#problem' },
+    { name: 'Modules', href: '#features' },
+    { name: 'Tarifs', href: '#pricing' },
+    { name: 'Contact', href: '#contact' },
   ];
 
   return (
     <nav
+      aria-label="Navigation principale"
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
         isScrolled
@@ -33,18 +33,12 @@ export default function Navbar() {
       )}
     >
       <div className="container-atr flex items-center justify-between py-4">
-        <div className="flex items-center gap-3">
-          <button className="lg:hidden text-charcoal" aria-label="Menu">
-            <Menu size={24} />
-          </button>
-          <Link to="/" className="flex items-center gap-2">
-            <span className="text-crimson text-2xl">✦</span>
-            <div className="leading-none">
-              <div className="font-serif-display text-2xl text-charcoal tracking-tight">RecovTN</div>
-              
-            </div>
-          </Link>
-        </div>
+        <Link to="/" className="flex items-center gap-2" aria-label="RecovTN — accueil">
+          <span className="text-crimson text-2xl" aria-hidden>✦</span>
+          <div className="leading-none">
+            <div className="font-serif-display text-2xl text-charcoal tracking-tight">RecovTN</div>
+          </div>
+        </Link>
 
         <div className="hidden lg:flex items-center gap-8">
           {navLinks.map((link) => (
@@ -59,24 +53,21 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-5">
-          <button className="text-charcoal hover:text-crimson transition-colors" aria-label="Recherche">
-            <Search size={18} />
-          </button>
           <Link
             to="/auth"
-            className="hidden sm:flex items-center gap-2 text-[13px] font-medium text-charcoal hover:text-crimson transition-colors border-l border-border pl-5"
+            className="hidden sm:flex items-center gap-2 text-[13px] font-medium text-charcoal hover:text-crimson transition-colors"
           >
-            <User size={16} />
+            <User size={16} aria-hidden />
             Connexion
           </Link>
-          <button className="hidden sm:flex items-center gap-1.5 text-[13px] font-medium text-charcoal border-l border-border pl-5">
-            <Globe size={16} />
-            FR
-          </button>
+          <a href="#contact" className="hidden md:inline-flex btn-crimson !px-5 !py-2.5 text-[13px]">
+            Demander une démo
+          </a>
           <button
-            className="lg:hidden text-charcoal"
+            className="lg:hidden text-charcoal p-1"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Menu"
+            aria-label={isMobileMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
+            aria-expanded={isMobileMenuOpen}
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>

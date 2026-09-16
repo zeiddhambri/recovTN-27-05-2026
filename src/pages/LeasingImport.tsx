@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Database, FileCheck2, AlertTriangle } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { ImportDropzone } from '@/components/leasing/import/ImportDropzone';
@@ -20,7 +21,7 @@ export default function LeasingImport() {
       .from('leasing_portfolio')
       .select('*')
       .order('imported_at', { ascending: false });
-    if (data) setRows(data as any);
+    if (data) setRows(data as unknown as LeasingRow[]);
     setLoading(false);
   }, [user]);
 
@@ -86,7 +87,7 @@ export default function LeasingImport() {
   );
 }
 
-function KpiCard({ label, value, icon: Icon, color }: { label: string; value: any; icon: any; color: string }) {
+function KpiCard({ label, value, icon: Icon, color }: { label: string; value: string | number; icon: LucideIcon; color: string }) {
   const colorMap: Record<string, string> = {
     teal: 'bg-teal-100 text-teal-700',
     emerald: 'bg-emerald-100 text-emerald-700',

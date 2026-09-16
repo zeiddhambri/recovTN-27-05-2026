@@ -12,6 +12,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from '@/hooks/use-toast';
+import DemoBanner from '@/components/DemoBanner';
 import {
   kpis, cashFlowData, cashFlowSummary, recoveryByAgent, channelEffectiveness,
   agentPerformance, funnelData, agingHeatmap, agingBuckets, AGENTS,
@@ -32,14 +35,28 @@ export default function Analytics() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [selectedCell, setSelectedCell] = useState<{ risk: string; bucket: string } | null>(null);
 
-  const runAnalysis = () => {
+  const runAnalysis = async () => {
     setIsAnalyzing(true);
-    setTimeout(() => {
-      setAiAnalysis(
-        "📊 Synthèse IA du portefeuille\n\n• Le taux de recouvrement progresse de +4.6 pts vs trimestre précédent (32.4%)\n• Leila M. surperforme : 35.8% de recouvrement vs 28% benchmark sectoriel\n• Risque concentré sur la cellule Critique × > 180j (encours estimé : 1.2M TND)\n• Le canal WhatsApp affiche le meilleur ROI : 47.4% de réponse pour un coût marginal\n• Recommandation : réallouer 15% du budget SMS vers WhatsApp + escalade téléphonique sur les 38 dossiers Critiques > 90j",
-      );
+    try {
+      const summary = JSON.stringify({
+        kpis,
+        cashFlowSummary,
+        recoveryByAgent: recoveryByAgent.slice(0, 8),
+        channelEffectiveness,
+        agentPerformance: agentPerformance.slice(0, 8),
+        agingBuckets,
+      });
+      const { data, error } = await supabase.functions.invoke('portfolio-insights', { body: { summary } });
+      if (error) throw error;
+      const text = (data as { analysis?: string } | null)?.analysis?.trim();
+      if (!text) throw new Error('Réponse IA vide.');
+      setAiAnalysis(text);
+    } catch (e) {
+      const message = e instanceof Error ? e.message : 'Erreur inconnue';
+      toast({ title: "Analyse IA indisponible", description: message, variant: 'destructive' });
+    } finally {
       setIsAnalyzing(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -113,6 +130,8 @@ export default function Analytics() {
         <p className="text-muted-foreground mt-1 text-sm">Pilotage avancé du recouvrement — vision unifiée portefeuille, agents et trésorerie.</p>
       </div>
 
+      <DemoBanner />
+
       {/* ─── AI ANALYSIS PANEL ─── */}
       <AnimatePresence>
         {aiAnalysis && (
@@ -127,7 +146,7 @@ export default function Analytics() {
                 <Brain size={20} className="text-[hsl(var(--crimson))]" />
                 <h3 className="text-base font-semibold">Synthèse intelligente</h3>
               </div>
-              <button onClick={() => setAiAnalysis(null)} className="text-white/60 hover:text-white"><X size={16} /></button>
+              <button onClick={() => setAiAnalysis(null)} aria-label="Fermer la synthèse" className="text-white/60 hover:text-white"><X size={16} /></button>
             </div>
             <pre className="text-sm text-white/85 whitespace-pre-wrap font-sans leading-relaxed">{aiAnalysis}</pre>
           </motion.div>

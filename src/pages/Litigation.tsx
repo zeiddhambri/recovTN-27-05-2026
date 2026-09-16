@@ -5,7 +5,9 @@ import {
   Gavel, Scale, Clock, TrendingUp, Search, Filter, Plus, ChevronRight,
   FileText, Users, Calendar, AlertCircle,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import DemoBanner from '@/components/DemoBanner';
 import {
   litigationCases, STAGE_CONFIG, TYPE_LABELS, KANBAN_STAGES,
   totalAmount, totalRecovered, type CaseStage, type CaseType,
@@ -56,7 +58,7 @@ export default function Litigation() {
     return KANBAN_STAGES.reduce<Record<CaseStage, typeof litigationCases>>((acc, s) => {
       acc[s] = litigationCases.filter(c => c.stage === s);
       return acc;
-    }, {} as any);
+    }, {} as Record<CaseStage, typeof litigationCases>);
   }, []);
 
   return (
@@ -72,6 +74,8 @@ export default function Litigation() {
         </button>
       </div>
       <NouveauDossierContentieuxModal open={modalOpen} onClose={() => setModalOpen(false)} />
+
+      <DemoBanner />
 
       {/* ─── Stats row ─── */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -154,7 +158,7 @@ export default function Litigation() {
           </div>
           <select
             value={stageFilter}
-            onChange={(e) => setStageFilter(e.target.value as any)}
+            onChange={(e) => setStageFilter(e.target.value as CaseStage | 'all')}
             className="px-3 py-2 rounded-lg bg-secondary text-sm border-0 focus:outline-none cursor-pointer"
           >
             <option value="all">Toutes étapes</option>
@@ -164,7 +168,7 @@ export default function Litigation() {
           </select>
           <select
             value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value as any)}
+            onChange={(e) => setTypeFilter(e.target.value as CaseType | 'all')}
             className="px-3 py-2 rounded-lg bg-secondary text-sm border-0 focus:outline-none cursor-pointer"
           >
             <option value="all">Tous types</option>
@@ -252,7 +256,7 @@ export default function Litigation() {
 
 // ─────────────────────────────────────────
 function StatCard({ icon: Icon, label, value, subtitle, accent }: {
-  icon: any;
+  icon: LucideIcon;
   label: string; value: string; subtitle?: string; accent?: boolean;
 }) {
   return (

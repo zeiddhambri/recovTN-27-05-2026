@@ -15,7 +15,7 @@ export interface DossierComplet {
 }
 
 export const statusConfig: Record<string, { label: string; color: string }> = {
-  a_relancer: { label: 'À relancer', color: 'text-sky bg-sky/10' },
+  a_relancer: { label: 'À relancer', color: 'text-blue-600 bg-blue-50' },
   en_relance: { label: 'En relance', color: 'text-gold bg-gold/10' },
   promesse_paiement: { label: 'Promesse de paiement', color: 'text-purple-600 bg-purple-50' },
   partiellement_paye: { label: 'Partiellement payé', color: 'text-amber-600 bg-amber-50' },

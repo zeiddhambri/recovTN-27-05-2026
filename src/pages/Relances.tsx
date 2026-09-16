@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import DemoBanner from '@/components/DemoBanner';
 import { mockDossiers } from '@/lib/mock-data';
 import {
   RelanceScenario, RelanceExecution, RelanceEtape,
@@ -53,6 +54,8 @@ export default function Relances() {
         onClose={() => setModalOpen(false)}
         onCreate={(sc) => setScenarios([sc, ...scenarios])}
       />
+
+      <DemoBanner text="Scénarios d'exemple — les envois réels (email, SMS, WhatsApp) seront branchés prochainement." />
 
       {/* Stats bar */}
       <RelanceStats />

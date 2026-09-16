@@ -40,15 +40,15 @@ export interface RelanceExecution {
 
 // Canal config
 export const canalConfig: Record<RelanceCanal, { label: string; emoji: string; color: string }> = {
-  sms: { label: 'SMS', emoji: '💬', color: 'text-sky bg-sky/10' },
+  sms: { label: 'SMS', emoji: '💬', color: 'text-blue-600 bg-blue-50' },
   email: { label: 'Email', emoji: '📧', color: 'text-purple-600 bg-purple-50' },
   whatsapp: { label: 'WhatsApp', emoji: '📱', color: 'text-green-600 bg-green-50' },
-  appel: { label: 'Appel', emoji: '📞', color: 'text-gold bg-gold/10' },
+  appel: { label: 'Appel', emoji: '📞', color: 'text-amber-600 bg-amber-50' },
 };
 
 export const statutRelanceConfig: Record<RelanceStatut, { label: string; color: string }> = {
   planifiee: { label: 'Planifiée', color: 'text-muted-foreground bg-muted' },
-  envoyee: { label: 'Envoyée', color: 'text-sky bg-sky/10' },
+  envoyee: { label: 'Envoyée', color: 'text-blue-600 bg-blue-50' },
   echouee: { label: 'Échouée', color: 'text-destructive bg-destructive/10' },
   annulee: { label: 'Annulée', color: 'text-muted-foreground bg-muted' },
   repondue: { label: 'Répondue', color: 'text-green-600 bg-green-50' },

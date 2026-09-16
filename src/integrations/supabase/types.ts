@@ -142,6 +142,30 @@ export type Database = {
           },
         ]
       }
+      demo_requests: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          institution: string | null
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          institution?: string | null
+          name: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          institution?: string | null
+          name?: string
+        }
+        Relationships: []
+      }
       lawyers: {
         Row: {
           created_at: string

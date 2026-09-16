@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { X, Scale, User, Wallet, Gavel, Shield, FileText, Calendar, AlertTriangle, Loader2, Sparkles, Upload, Mail, Phone, Hash, CheckCircle2 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -155,8 +156,8 @@ export default function NouveauDossierContentieuxModal({ open, onClose, onCreate
       toast.success(`Analyse terminée : ${dossiers.length} dossier(s) détecté(s).`);
       if (dossiers.length === 1) applyExtracted(dossiers[0]);
       else setCandidates(dossiers);
-    } catch (e: any) {
-      toast.error(e?.message || 'Échec analyse');
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Échec analyse');
     } finally {
       setAnalyzing(false);
       setTimeout(() => setProgress(0), 600);
@@ -198,7 +199,7 @@ export default function NouveauDossierContentieuxModal({ open, onClose, onCreate
       estimated_legal_fees: estimatedFees,
       source_file_url: source.url,
       source_file_name: source.name,
-    } as any);
+    });
     setSubmitting(false);
 
     if (error) { toast.error(`Erreur : ${error.message}`); return; }
@@ -416,7 +417,7 @@ export default function NouveauDossierContentieuxModal({ open, onClose, onCreate
   );
 }
 
-function Field({ icon: Icon, label, children }: { icon: any; label: string; children: React.ReactNode }) {
+function Field({ icon: Icon, label, children }: { icon: LucideIcon; label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1.5">
       <label className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-300">

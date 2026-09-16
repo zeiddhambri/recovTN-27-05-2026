@@ -95,8 +95,8 @@ export function useLeasingImport(onInserted?: () => void) {
       updateJob(job.id, { status: 'done', progress: 100, message: `${contracts.length} contrat(s) importé(s)`, inserted: contracts.length });
       toast.success(`${job.file.name} : ${contracts.length} contrat(s) ajouté(s)`);
       onInserted?.();
-    } catch (e: any) {
-      const msg = e?.message || 'Échec';
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : 'Échec';
       updateJob(job.id, { status: 'error', error: msg, message: msg });
       toast.error(`${job.file.name} : ${msg}`);
     }

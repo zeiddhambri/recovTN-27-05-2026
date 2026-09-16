@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ShieldCheck, Search, Plus, ExternalLink, CheckCircle2, AlertTriangle, Clock, Brain, Sparkles, ArrowRight } from 'lucide-react';
+import { ShieldCheck, Search, Plus, ChevronDown, CheckCircle2, AlertTriangle, Clock, Brain, Sparkles, ArrowRight, Inbox } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { toast } from '@/hooks/use-toast';
+import DemoBanner from '@/components/DemoBanner';
 
 interface Circular {
   id: string;
@@ -39,35 +41,80 @@ const mockChecklists: Record<string, ChecklistItem[]> = {
   ],
 };
 
+const CHECKLIST_STORAGE_KEY = 'recovtn:regulatory-checklists';
+
+function loadChecklists(): Record<string, ChecklistItem[]> {
+  try {
+    const raw = localStorage.getItem(CHECKLIST_STORAGE_KEY);
+    if (!raw) return mockChecklists;
+    const saved = JSON.parse(raw) as Record<string, Record<string, boolean>>;
+    const merged: Record<string, ChecklistItem[]> = {};
+    for (const [circularId, items] of Object.entries(mockChecklists)) {
+      merged[circularId] = items.map((it) => ({ ...it, completed: saved[circularId]?.[it.id] ?? it.completed }));
+    }
+    return merged;
+  } catch {
+    return mockChecklists;
+  }
+}
+
 export default function RegulatoryWatch() {
   const [activeTab, setActiveTab] = useState<'circulars' | 'checklists'>('circulars');
   const [selectedCircularId, setSelectedCircularId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [checklists, setChecklists] = useState<Record<string, ChecklistItem[]>>(loadChecklists);
 
   const filtered = mockCirculars.filter(c =>
     c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     c.reference.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const toggleItem = (circularId: string, itemId: string) => {
+    setChecklists((prev) => {
+      const next = {
+        ...prev,
+        [circularId]: prev[circularId].map((it) => (it.id === itemId ? { ...it, completed: !it.completed } : it)),
+      };
+      try {
+        const flat: Record<string, Record<string, boolean>> = {};
+        for (const [cid, items] of Object.entries(next)) {
+          flat[cid] = Object.fromEntries(items.map((it) => [it.id, it.completed]));
+        }
+        localStorage.setItem(CHECKLIST_STORAGE_KEY, JSON.stringify(flat));
+      } catch {
+        /* session-only fallback */
+      }
+      return next;
+    });
+  };
+
+  const toggleCard = (id: string) => setSelectedCircularId((cur) => (cur === id ? null : id));
+
   return (
     <div className="space-y-8">
-      <div className="flex justify-between items-start">
+      <div className="flex justify-between items-start flex-wrap gap-4">
         <div>
           <h1 className="text-3xl font-black text-navy tracking-tight font-syne">Veille Réglementaire</h1>
           <p className="text-muted-foreground mt-1">Circulaires BCT/CTAF et check-lists de conformité.</p>
         </div>
-        <button className="flex items-center gap-2 px-5 py-2.5 bg-sky text-white rounded-xl text-sm font-bold hover:bg-sky/90 transition-all shadow-lg shadow-sky/20">
+        <button
+          onClick={() => toast({ title: 'Bientôt disponible', description: "L'ajout manuel de circulaires arrive prochainement." })}
+          className="flex items-center gap-2 px-5 py-2.5 bg-sky text-white rounded-xl text-sm font-bold hover:bg-sky/90 transition-all shadow-lg shadow-sky/20"
+        >
           <Plus size={18} />
           Ajouter une circulaire
         </button>
       </div>
 
-      <div className="flex gap-4 items-center">
-        <div className="relative flex-1 max-w-md">
-          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+      <DemoBanner text="Veille d'exemple (4 circulaires 2023-2024) — le flux temps réel BCT/CTAF sera branché prochainement. Vos check-lists sont enregistrées localement." />
+
+      <div className="flex gap-4 items-center flex-wrap">
+        <div className="relative flex-1 max-w-md min-w-[220px]">
+          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" aria-hidden />
           <input
             type="text"
             placeholder="Rechercher une circulaire..."
+            aria-label="Rechercher une circulaire"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-11 pr-4 py-3 rounded-xl bg-card border border-border text-sm focus:outline-none focus:ring-2 focus:ring-sky/20 focus:border-sky transition-all"
@@ -97,25 +144,34 @@ export default function RegulatoryWatch() {
           {filtered.map((c, i) => (
             <motion.div
               key={c.id}
+              role="button"
+              tabIndex={0}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
-              className="bg-card rounded-2xl p-6 border border-border hover:shadow-md transition-all cursor-pointer"
-              onClick={() => setSelectedCircularId(selectedCircularId === c.id ? null : c.id)}
+              aria-expanded={selectedCircularId === c.id}
+              className="bg-card rounded-2xl p-6 border border-border hover:shadow-md transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-crimson focus-visible:outline-none"
+              onClick={() => toggleCard(c.id)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  toggleCard(c.id);
+                }
+              }}
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-start gap-4">
                   <div className={cn(
                     "w-12 h-12 rounded-xl flex items-center justify-center shrink-0",
-                    c.source === 'BCT' ? "bg-sky/10 text-sky" : "bg-gold/10 text-gold"
+                    c.source === 'BCT' ? "bg-blue-50 text-blue-600" : "bg-amber-50 text-amber-600"
                   )}>
-                    <ShieldCheck size={20} />
+                    <ShieldCheck size={20} aria-hidden />
                   </div>
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <span className={cn(
                         "text-[10px] font-black uppercase tracking-widest",
-                        c.source === 'BCT' ? "text-sky" : "text-gold"
+                        c.source === 'BCT' ? "text-blue-600" : "text-amber-600"
                       )}>
                         {c.source} {c.reference}
                       </span>
@@ -125,10 +181,14 @@ export default function RegulatoryWatch() {
                     <p className="text-xs text-muted-foreground leading-relaxed">{c.summary}</p>
                   </div>
                 </div>
-                <ExternalLink size={16} className="text-muted-foreground shrink-0" />
+                <ChevronDown
+                  size={16}
+                  aria-hidden
+                  className={cn('text-muted-foreground shrink-0 transition-transform', selectedCircularId === c.id && 'rotate-180')}
+                />
               </div>
 
-              {selectedCircularId === c.id && mockChecklists[c.id] && (
+              {selectedCircularId === c.id && checklists[c.id] && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
@@ -136,29 +196,42 @@ export default function RegulatoryWatch() {
                 >
                   <h4 className="text-xs font-bold text-navy uppercase tracking-widest mb-3">Check-list de conformité</h4>
                   <div className="space-y-2">
-                    {mockChecklists[c.id].map((item) => (
-                      <div key={item.id} className="flex items-center gap-3 p-3 bg-mist rounded-xl">
-                        <div className={cn(
-                          "w-5 h-5 rounded-full flex items-center justify-center",
+                    {checklists[c.id].map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); toggleItem(c.id, item.id); }}
+                        aria-pressed={item.completed}
+                        className="w-full flex items-center gap-3 p-3 bg-mist rounded-xl hover:bg-border/40 transition-colors text-left"
+                      >
+                        <span className={cn(
+                          "w-5 h-5 rounded-full flex items-center justify-center shrink-0",
                           item.completed ? "bg-green-500 text-white" : "bg-border"
                         )}>
-                          {item.completed && <CheckCircle2 size={12} />}
-                        </div>
+                          {item.completed && <CheckCircle2 size={12} aria-hidden />}
+                        </span>
                         <span className={cn("text-sm", item.completed ? "text-muted-foreground line-through" : "text-navy font-medium")}>
                           {item.task}
                         </span>
-                      </div>
+                      </button>
                     ))}
                   </div>
                 </motion.div>
               )}
             </motion.div>
           ))}
+          {filtered.length === 0 && (
+            <div className="flex flex-col items-center gap-2 py-14 text-center">
+              <Inbox size={28} className="text-muted-foreground" aria-hidden />
+              <p className="font-bold text-navy">Aucune circulaire trouvée</p>
+              <p className="text-sm text-muted-foreground">Essayez un autre mot-clé ou une autre référence.</p>
+            </div>
+          )}
         </div>
       ) : (
         <div className="space-y-6">
-          {mockCirculars.filter(c => mockChecklists[c.id]).map((c) => {
-            const items = mockChecklists[c.id];
+          {mockCirculars.filter(c => checklists[c.id]).map((c) => {
+            const items = checklists[c.id];
             const completed = items.filter(i => i.completed).length;
             const total = items.length;
             const pct = Math.round((completed / total) * 100);
@@ -167,12 +240,12 @@ export default function RegulatoryWatch() {
               <div key={c.id} className="bg-card rounded-2xl p-6 border border-border">
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <span className="text-[10px] font-black uppercase tracking-widest text-sky">{c.source} {c.reference}</span>
+                    <span className={cn('text-[10px] font-black uppercase tracking-widest', c.source === 'BCT' ? 'text-blue-600' : 'text-amber-600')}>{c.source} {c.reference}</span>
                     <p className="font-bold text-navy text-sm">{c.title}</p>
                   </div>
                   <div className={cn(
                     "flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full",
-                    pct === 100 ? "text-green-500 bg-green-50" : pct > 50 ? "text-gold bg-gold/10" : "text-red-500 bg-red-50"
+                    pct === 100 ? "text-green-500 bg-green-50" : pct > 50 ? "text-amber-600 bg-amber-50" : "text-red-500 bg-red-50"
                   )}>
                     {pct === 100 ? <CheckCircle2 size={12} /> : pct > 50 ? <Clock size={12} /> : <AlertTriangle size={12} />}
                     {pct}%
@@ -213,7 +286,7 @@ export default function RegulatoryWatch() {
                 </div>
                 <h2 className="text-2xl md:text-3xl font-black font-syne tracking-tight flex items-center gap-3">
                   <Brain size={28} className="text-sky" />
-                  AI Credit Underwriting & IFRS 9 Engine
+                  AI Credit Underwriting &amp; IFRS 9 Engine
                 </h2>
                 <p className="text-sm text-white/80 mt-3 max-w-2xl leading-relaxed">
                   Analyse crédit assistée par IA combinant les 5 piliers prudentiels Bâle III et le calibrage IFRS 9 :

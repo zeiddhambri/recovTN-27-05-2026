@@ -8,9 +8,11 @@ import {
   Brain, Sparkles, ArrowLeft, AlertTriangle, CheckCircle2, ShieldCheck,
   TrendingUp, FileText, Gauge, Scale, Loader2, AlertCircle, Info,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import type { CreditAnalysis, PilierAnalyse, RedFlagAnalyse, FacteurFavorable, ConditionSuggeree } from '@/lib/credit-analysis';
 
 type Dossier = Record<string, string | number>;
-type Analysis = any;
+type Analysis = CreditAnalysis;
 
 const initialDossier: Dossier = {
   type_client: 'particulier', client_id: '', age_anciennete: '', situation_pro: '',
@@ -26,22 +28,22 @@ const initialDossier: Dossier = {
 
 const decisionColor: Record<string, { bg: string; text: string; border: string }> = {
   'Acceptation favorable': { bg: 'bg-green-50', text: 'text-green-700', border: 'border-green-200' },
-  'Acceptation conditionnelle': { bg: 'bg-sky/10', text: 'text-sky', border: 'border-sky/30' },
-  'Révision approfondie requise': { bg: 'bg-gold/10', text: 'text-gold', border: 'border-gold/30' },
+  'Acceptation conditionnelle': { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' },
+  'Révision approfondie requise': { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
   'Recommandation défavorable': { bg: 'bg-destructive/10', text: 'text-destructive', border: 'border-destructive/30' },
 };
 
 const niveauColor: Record<string, string> = {
   'Faible': 'text-green-600 bg-green-50',
-  'Modéré': 'text-sky bg-sky/10',
-  'Élevé': 'text-gold bg-gold/10',
+  'Modéré': 'text-blue-600 bg-blue-50',
+  'Élevé': 'text-amber-600 bg-amber-50',
   'Critique': 'text-destructive bg-destructive/10',
 };
 
 const qualitatifColor: Record<string, string> = {
   'Fort': 'text-green-600 bg-green-50',
-  'Acceptable': 'text-sky bg-sky/10',
-  'Fragile': 'text-gold bg-gold/10',
+  'Acceptable': 'text-blue-600 bg-blue-50',
+  'Fragile': 'text-amber-600 bg-amber-50',
   'Critique': 'text-destructive bg-destructive/10',
 };
 
@@ -98,8 +100,8 @@ export default function DecisionCredit() {
         </button>
       </div>
 
-      <div className="flex items-start gap-3 p-4 rounded-2xl bg-gold/10 border border-gold/30">
-        <AlertTriangle size={18} className="text-gold shrink-0 mt-0.5" />
+      <div className="flex items-start gap-3 p-4 rounded-2xl bg-amber-50 border border-amber-200">
+        <AlertTriangle size={18} className="text-amber-600 shrink-0 mt-0.5" />
         <p className="text-xs text-navy">
           <strong>Outil d'aide à la décision uniquement.</strong> Toute recommandation est assistée par IA, révisable par un analyste humain, et soumise à validation institutionnelle obligatoire. Non opposable comme décision autonome.
         </p>
@@ -168,7 +170,7 @@ export default function DecisionCredit() {
 
 const inputCls = "w-full px-3 py-2 rounded-lg bg-card border border-border text-sm focus:outline-none focus:ring-2 focus:ring-sky/20 focus:border-sky transition-all";
 
-function FormCard({ title, icon: Icon, children }: { title: string; icon: any; children: React.ReactNode }) {
+function FormCard({ title, icon: Icon, children }: { title: string; icon: LucideIcon; children: React.ReactNode }) {
   return (
     <div className="bg-card rounded-2xl border border-border p-5">
       <div className="flex items-center gap-2 mb-4">
@@ -227,7 +229,7 @@ function AnalysisResult({ analysis }: { analysis: Analysis }) {
           <Scale size={16} className="text-sky" /> 5 Piliers Prudentiels
         </h3>
         <div className="space-y-3">
-          {analysis.piliers?.map((p: any) => (
+          {analysis.piliers?.map((p: PilierAnalyse) => (
             <div key={p.id} className="rounded-xl border border-border p-4">
               <div className="flex items-center justify-between gap-3 mb-2">
                 <div className="flex items-center gap-2">
@@ -266,7 +268,7 @@ function AnalysisResult({ analysis }: { analysis: Analysis }) {
             <AlertCircle size={16} className="text-destructive" /> Signaux d'alerte ({analysis.red_flags?.length || 0})
           </h3>
           <div className="space-y-2">
-            {analysis.red_flags?.length ? analysis.red_flags.map((f: any, i: number) => (
+            {analysis.red_flags?.length ? analysis.red_flags.map((f: RedFlagAnalyse, i: number) => (
               <div key={i} className="p-3 rounded-xl bg-mist">
                 <div className="flex items-center gap-2 mb-1">
                   <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-full", niveauColor[f.niveau])}>{f.niveau}</span>
@@ -284,7 +286,7 @@ function AnalysisResult({ analysis }: { analysis: Analysis }) {
             <CheckCircle2 size={16} className="text-green-600" /> Facteurs favorables ({analysis.facteurs_favorables?.length || 0})
           </h3>
           <div className="space-y-2">
-            {analysis.facteurs_favorables?.length ? analysis.facteurs_favorables.map((f: any, i: number) => (
+            {analysis.facteurs_favorables?.length ? analysis.facteurs_favorables.map((f: FacteurFavorable, i: number) => (
               <div key={i} className="p-3 rounded-xl bg-green-50">
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-green-700 bg-green-100">{f.type}</span>
@@ -304,11 +306,11 @@ function AnalysisResult({ analysis }: { analysis: Analysis }) {
             <ShieldCheck size={16} className="text-sky" /> Conditions suggérées
           </h3>
           <div className="space-y-2">
-            {analysis.conditions_suggerees.map((c: any, i: number) => (
+            {analysis.conditions_suggerees.map((c: ConditionSuggeree, i: number) => (
               <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-mist">
                 <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0",
                   c.priorite === 'Obligatoire' ? 'text-destructive bg-destructive/10' :
-                  c.priorite === 'Recommandé' ? 'text-sky bg-sky/10' : 'text-muted-foreground bg-muted')}>
+                  c.priorite === 'Recommandé' ? 'text-blue-600 bg-blue-50' : 'text-muted-foreground bg-muted')}>
                   {c.priorite}
                 </span>
                 <div className="flex-1">
@@ -323,9 +325,9 @@ function AnalysisResult({ analysis }: { analysis: Analysis }) {
 
       {/* Données manquantes */}
       {analysis.donnees_analysees?.donnees_manquantes?.length > 0 && (
-        <div className="bg-gold/10 rounded-2xl border border-gold/30 p-5">
+        <div className="bg-amber-50 rounded-2xl border border-amber-200 p-5">
           <h3 className="font-bold text-sm text-navy mb-3 flex items-center gap-2">
-            <Info size={16} className="text-gold" /> Données manquantes ({analysis.donnees_analysees.donnees_manquantes.length})
+            <Info size={16} className="text-amber-600" /> Données manquantes ({analysis.donnees_analysees.donnees_manquantes.length})
           </h3>
           <ul className="space-y-1">
             {analysis.donnees_analysees.donnees_manquantes.map((d: string, i: number) => (

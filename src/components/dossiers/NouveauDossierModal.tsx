@@ -50,17 +50,19 @@ export default function NouveauDossierModal({ open, onClose, onCreated }: Props)
         body: { content: text, filename: file.name },
       });
       if (error) throw error;
-      const list: ExtractedDossier[] = (data?.dossiers || []).map((d: any) => ({
-        debtor_name: d.debtor_name || '',
-        debtor_email: d.debtor_email || '',
-        debtor_phone: d.debtor_phone || '+216',
+      const rawList = (data?.dossiers || []) as Array<Record<string, unknown>>;
+      const str = (v: unknown, fallback = ''): string => (typeof v === 'string' ? v : fallback);
+      const list: ExtractedDossier[] = rawList.map((d) => ({
+        debtor_name: str(d.debtor_name),
+        debtor_email: str(d.debtor_email),
+        debtor_phone: str(d.debtor_phone, '+216'),
         amount: Number(d.amount) || 0,
-        due_date: d.due_date || '',
+        due_date: str(d.due_date),
       }));
       setExtracted(list.length ? list : [emptyRow()]);
       toast({ title: 'Analyse terminée', description: `${list.length} dossier(s) détecté(s).` });
-    } catch (e: any) {
-      toast({ title: 'Erreur d\'extraction', description: e.message || 'Veuillez réessayer.', variant: 'destructive' });
+    } catch (e) {
+      toast({ title: 'Erreur d\'extraction', description: e instanceof Error ? e.message : 'Veuillez réessayer.', variant: 'destructive' });
     } finally {
       setAnalyzing(false);
     }

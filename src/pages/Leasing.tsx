@@ -10,6 +10,7 @@ import {
   TrendingUp, Wallet, Clock, Activity, FileX, ShieldAlert, Sparkles,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import DemoBanner from '@/components/DemoBanner';
 import {
   leasingContracts, STATUS_CONFIG, ASSET_TYPE_CONFIG, NOTIFICATION_CONFIG,
   totalOverdue, overdueCount, daysOverdue, nextInstallment,
@@ -136,6 +137,8 @@ export default function Leasing() {
           </Link>
         </div>
       </div>
+
+      <DemoBanner />
 
       {/* 5 KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">

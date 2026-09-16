@@ -106,6 +106,6 @@ export function calculerScore(criteria: ScoringCriteria): ScoringResult {
 // Classification labels & colors (semantic tokens)
 export const classificationConfig: Record<ClientClassification, { label: string; colorClass: string; bgClass: string }> = {
   fiable: { label: 'Client Fiable', colorClass: 'text-green-600', bgClass: 'bg-green-50' },
-  a_surveiller: { label: 'À Surveiller', colorClass: 'text-gold', bgClass: 'bg-gold/10' },
+  a_surveiller: { label: 'À Surveiller', colorClass: 'text-amber-600', bgClass: 'bg-amber-50' },
   a_risque: { label: 'À Risque', colorClass: 'text-destructive', bgClass: 'bg-destructive/10' },
 };

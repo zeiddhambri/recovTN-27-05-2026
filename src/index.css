@@ -39,6 +39,9 @@
     /* Atradius-inspired palette */
     --navy: 220 25% 15%;
     --cobalt: 220 25% 22%;
+    /* NOTE: `sky` / `gold` are legacy brand aliases (both map to crimson red).
+       Do NOT use them for info/warning semantics — use explicit Tailwind
+       colors instead (e.g. text-blue-600/bg-blue-50, text-amber-600/bg-amber-50). */
     --sky: 354 87% 44%;        /* aliased to corporate red for compat */
     --sky-light: 354 87% 60%;
     --gold: 354 87% 44%;       /* aliased */

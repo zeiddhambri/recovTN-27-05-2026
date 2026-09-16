@@ -1,5 +1,4 @@
 import * as XLSX from 'xlsx';
-import Papa from 'papaparse';
 import mammoth from 'mammoth';
 
 export type ExtractedDossier = {
@@ -10,10 +9,25 @@ export type ExtractedDossier = {
   due_date?: string;
 };
 
+/** Minimal surface of pdfjs-dist used here (avoids `any`). */
+interface PdfJsTextItem {
+  str?: string;
+}
+interface PdfJsPage {
+  getTextContent: () => Promise<{ items: PdfJsTextItem[] }>;
+}
+interface PdfJsDocument {
+  numPages: number;
+  getPage: (n: number) => Promise<PdfJsPage>;
+}
+interface PdfJsApi {
+  GlobalWorkerOptions: { workerSrc: string };
+  getDocument: (opts: { data: ArrayBuffer }) => { promise: Promise<PdfJsDocument> };
+}
+
 async function readPdfText(file: File): Promise<string> {
-  const pdfjs: any = await import('pdfjs-dist');
-  // @ts-ignore
-  const workerSrc = (await import('pdfjs-dist/build/pdf.worker.mjs?url')).default;
+  const pdfjs = (await import('pdfjs-dist')) as unknown as PdfJsApi;
+  const workerSrc = (await import('pdfjs-dist/build/pdf.worker.mjs?url')).default as string;
   pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
   const buf = await file.arrayBuffer();
   const doc = await pdfjs.getDocument({ data: buf }).promise;
@@ -21,7 +35,7 @@ async function readPdfText(file: File): Promise<string> {
   for (let i = 1; i <= doc.numPages; i++) {
     const page = await doc.getPage(i);
     const content = await page.getTextContent();
-    txt += content.items.map((it: any) => it.str).join(' ') + '\n';
+    txt += content.items.map((it) => it.str ?? '').join(' ') + '\n';
   }
   return txt;
 }
@@ -50,3 +64,4 @@ export async function fileToText(file: File): Promise<{ text: string; isTabular:
   }
   return { text: await file.text(), isTabular: false };
 }
+

@@ -3,31 +3,37 @@ import { Database, Scale, BarChart3, Bell, Send, Gauge, ArrowRight } from 'lucid
 
 const features = [
   {
+    id: 'feature-dossiers',
     icon: Database,
     title: 'Gestion des dossiers',
     desc: "CRUD complet des créances avec 6 statuts normalisés : à relancer, en relance, promesse de paiement, partiellement payé, payé, transfert en contentieux. Affectation aux agents et historique des interactions.",
   },
   {
+    id: 'feature-relance',
     icon: Send,
     title: 'Moteur de relance multicanal',
     desc: "Scénarios paramétrables (Standard, Intensif, Amiable) avec déclencheurs sur délais relatifs (J-5, J+1…) et conditions sur le score client. Canaux SMS, email, WhatsApp et appel.",
   },
   {
+    id: 'feature-scoring',
     icon: Gauge,
     title: 'Scoring de risque (0-100)',
     desc: "Score pondéré sur 5 critères — montant, historique, ancienneté, réactivité, profil — qui classe chaque client en Fiable, À surveiller ou À risque pour prioriser vos actions.",
   },
   {
+    id: 'feature-judiciaire',
     icon: Scale,
     title: 'Suivi judiciaire',
     desc: "Agenda contentieux dédié pour suivre les dossiers transférés : échéances de procédure, intervenants et avancement consolidés.",
   },
   {
+    id: 'feature-veille',
     icon: Bell,
     title: 'Veille réglementaire BCT & CTAF',
     desc: "Module de veille des circulaires Banque Centrale de Tunisie et CTAF, intégré dans la plateforme pour alimenter votre conformité.",
   },
   {
+    id: 'feature-reporting',
     icon: BarChart3,
     title: 'Reporting & analytics',
     desc: "Tableau de bord opérationnel et page Analytics avec indicateurs de performance, vues consolidées et exports prêts pour le régulateur.",
@@ -64,6 +70,8 @@ export default function Features() {
             return (
               <motion.div
                 key={i}
+                id={f.id}
+                style={{ scrollMarginTop: '90px' }}
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: i * 0.06 }}
