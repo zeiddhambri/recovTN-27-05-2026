@@ -5,6 +5,7 @@
 > **État d'avancement (16/09/2026) :**
 > - **P0 implémenté, vérifié et poussé** (commit `4281403`).
 > - **P1-1 « Ma journée » + P1-2 fiche dossier 360° + P1-3 promesses suivies implémentés** : routes `/aujourdhui` et `/dossiers/:id`, notes et promesses persistées (tables `dossier_notes`, `payment_promises` + RLS), recommandation next-best-action transparente, page d'accueil post-login = file priorisée.
+> - **P1-4 canal email réel implémenté** : edge functions `send-email` (Resend) + `email-webhook` (Svix) → table `relance_envois`, dialogue d'envoi 3 modèles FR sur la fiche dossier, timeline sent/delivered/opened/clicked/bounced, état « Canal non configuré » honnête + `docs/CANAUX-EMAIL.md` (opérateur : `supabase db push`, déployer les fonctions, secrets RESEND_API_KEY/EMAIL_FROM/EMAIL_WEBHOOK_SECRET). SMS/WhatsApp → roadmap.
 > - Restent : P1-4 canaux réels, P1-5 recherche globale, P1-6 onboarding, puis P2.
 
 ---
